@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>fanda&#39;s blog</title>
+  
+  <subtitle>凡达的博客</subtitle>
+  <link href="https://liuhangya.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://liuhangya.github.io/"/>
+  <updated>2022-06-06T06:23:54.000Z</updated>
+  <id>https://liuhangya.github.io/</id>
+  
+  <author>
+    <name>Fanda Zeng</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>livedata</title>
+    <link href="https://liuhangya.github.io/2022/06/06/livedata/"/>
+    <id>https://liuhangya.github.io/2022/06/06/livedata/</id>
+    <published>2022-06-06T06:23:54.000Z</published>
+    <updated>2022-06-06T06:23:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;LiveData (可观察的数据存储器类)，使用篇…&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="jetpack android" scheme="https://liuhangya.github.io/tags/jetpack-android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>LiveData 使用</title>
+    <link href="https://liuhangya.github.io/2022/06/06/hello-world/"/>
+    <id>https://liuhangya.github.io/2022/06/06/hello-world/</id>
+    <published>2022-06-06T06:17:33.000Z</published>
+    <updated>2022-06-06T06:17:33.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;源数据使用 &lt;code&gt;LiveData&lt;/code&gt; 进行包装之后，可以被观察，当数据有更新时，观察者可感知…&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="android" scheme="https://liuhangya.github.io/categories/android/"/>
+    
+    
+    <category term="jetpack" scheme="https://liuhangya.github.io/tags/jetpack/"/>
+    
+  </entry>
+  
+</feed>

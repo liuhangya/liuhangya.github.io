@@ -29,14 +29,19 @@
   
 <script src="/js/pace.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
 
 <body>
   <main class="content">
     <section class="outer">
-  <article id="post-livedata" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
+  <article
+  id="post-livedata"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
   <div class="article-inner">
     
     <header class="article-header">
@@ -49,28 +54,18 @@
 
 
     </header>
-    
-
-    
+     
     <div class="article-meta">
       <a href="/2022/06/06/livedata/" class="article-date">
   <time datetime="2022-06-06T06:23:54.000Z" itemprop="datePublished">2022-06-06</time>
-</a>
-      
+</a> 
     </div>
-    
-
-    
-    
+      
 <div class="tocbot"></div>
-
-    
+ 
 
     <div class="article-entry" itemprop="articleBody">
-      
-      
-      
-      <p>LiveData (可观察的数据存储器类)，使用篇…</p>
+         <p>LiveData (可观察的数据存储器类)，使用篇…</p>
 <span id="more"></span>
 
 <h2 id="LiveData-可观察的数据存储器类-，使用篇"><a href="#LiveData-可观察的数据存储器类-，使用篇" class="headerlink" title="LiveData (可观察的数据存储器类)，使用篇"></a><strong>LiveData (可观察的数据存储器类)，使用篇</strong></h2><h4 id="作用：不是普通的观察类，具有生命周期感知能力，能够在-Activity、Fragment、Service-中正确的处理生命周期。"><a href="#作用：不是普通的观察类，具有生命周期感知能力，能够在-Activity、Fragment、Service-中正确的处理生命周期。" class="headerlink" title="作用：不是普通的观察类，具有生命周期感知能力，能够在 Activity、Fragment、Service 中正确的处理生命周期。"></a>作用：不是普通的观察类，具有生命周期感知能力，能够在 <code>Activity、Fragment、Service</code> 中正确的处理生命周期。</h4><h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><h5 id="1-LiveData-是一个数据持有者，是数据源的包装类。"><a href="#1-LiveData-是一个数据持有者，是数据源的包装类。" class="headerlink" title="1. LiveData 是一个数据持有者，是数据源的包装类。"></a>1. <code>LiveData</code> 是一个数据持有者，是数据源的包装类。</h5><h5 id=""><a href="#" class="headerlink" title=""></a></h5><h5 id="2-源数据使用-LiveData-进行包装之后，可以被观察，当数据有更新时，观察者可感知。"><a href="#2-源数据使用-LiveData-进行包装之后，可以被观察，当数据有更新时，观察者可感知。" class="headerlink" title="2. 源数据使用 LiveData 进行包装之后，可以被观察，当数据有更新时，观察者可感知。"></a>2. 源数据使用 <code>LiveData</code> 进行包装之后，可以被观察，当数据有更新时，观察者可感知。</h5><h5 id="-1"><a href="#-1" class="headerlink" title=""></a></h5><h5 id="3-观察者感知或被通知到的时机是跟生命周期相关的，只发生在-Activity-Fragment-活跃生命周期状态，如果一个观察者处于-Paused-或-Destroyed-状态，它将不会收到通知。"><a href="#3-观察者感知或被通知到的时机是跟生命周期相关的，只发生在-Activity-Fragment-活跃生命周期状态，如果一个观察者处于-Paused-或-Destroyed-状态，它将不会收到通知。" class="headerlink" title="3. 观察者感知或被通知到的时机是跟生命周期相关的，只发生在 Activity/Fragment 活跃生命周期状态，如果一个观察者处于 Paused 或 Destroyed 状态，它将不会收到通知。"></a>3. 观察者感知或被通知到的时机是跟生命周期相关的，只发生在 <code>Activity/Fragment</code> 活跃生命周期状态，如果一个观察者处于 <code>Paused</code> 或 <code>Destroyed</code> 状态，它将不会收到通知。</h5><h4 id="优势："><a href="#优势：" class="headerlink" title="优势："></a>优势：</h4><h5 id="1-不会发生内存泄漏且无须手动解除观察，LiveData-会在相应生命周期自动移除。"><a href="#1-不会发生内存泄漏且无须手动解除观察，LiveData-会在相应生命周期自动移除。" class="headerlink" title="1. 不会发生内存泄漏且无须手动解除观察，LiveData 会在相应生命周期自动移除。"></a>1. 不会发生内存泄漏且无须手动解除观察，<code>LiveData</code> 会在相应生命周期自动移除。</h5><h5 id="-2"><a href="#-2" class="headerlink" title=""></a></h5><h5 id="2-不会因-Activity-停止而导致崩溃，当生命周期处于非活跃状态，不会接收任何-LiveData-事件。"><a href="#2-不会因-Activity-停止而导致崩溃，当生命周期处于非活跃状态，不会接收任何-LiveData-事件。" class="headerlink" title="2. 不会因 Activity 停止而导致崩溃，当生命周期处于非活跃状态，不会接收任何 LiveData 事件。"></a>2. 不会因 <code>Activity</code> 停止而导致崩溃，当生命周期处于非活跃状态，不会接收任何 <code>LiveData</code> 事件。</h5><h5 id="-3"><a href="#-3" class="headerlink" title=""></a></h5><h5 id="3-数据始终保持最新状态且避免重复刷新界面，数据更新时若-Activity-为非活跃状态，那么会在变为活跃时接收最新数据。例如，在后台的-Activity-会在返回前台时立即接收最新的数据，而不是在每次数据变化时刷新界面。"><a href="#3-数据始终保持最新状态且避免重复刷新界面，数据更新时若-Activity-为非活跃状态，那么会在变为活跃时接收最新数据。例如，在后台的-Activity-会在返回前台时立即接收最新的数据，而不是在每次数据变化时刷新界面。" class="headerlink" title="3. 数据始终保持最新状态且避免重复刷新界面，数据更新时若 Activity 为非活跃状态，那么会在变为活跃时接收最新数据。例如，在后台的 Activity 会在返回前台时立即接收最新的数据，而不是在每次数据变化时刷新界面。"></a>3. 数据始终保持最新状态且避免重复刷新界面，数据更新时若 <code>Activity</code> 为非活跃状态，那么会在变为活跃时接收最新数据。例如，在后台的 <code>Activity</code> 会在返回前台时立即接收最新的数据，而不是在每次数据变化时刷新界面。</h5><h3 id="LiveData-的基础使用"><a href="#LiveData-的基础使用" class="headerlink" title="LiveData 的基础使用"></a>LiveData 的基础使用</h3><h4 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h4><h5 id="1-创建-LiveData-实例，通过泛型指定源数据类型。"><a href="#1-创建-LiveData-实例，通过泛型指定源数据类型。" class="headerlink" title="1. 创建 LiveData 实例，通过泛型指定源数据类型。"></a>1. 创建 <code>LiveData</code> 实例，通过泛型指定源数据类型。</h5><h5 id="-4"><a href="#-4" class="headerlink" title=""></a></h5><h5 id="2-创建-Observer-实例，实现-onChanged-方法，用于接收源数据变化并刷新-UI。"><a href="#2-创建-Observer-实例，实现-onChanged-方法，用于接收源数据变化并刷新-UI。" class="headerlink" title="2. 创建 Observer 实例，实现 onChanged() 方法，用于接收源数据变化并刷新 UI。"></a>2. 创建 <code>Observer</code> 实例，实现 <code>onChanged()</code> 方法，用于接收源数据变化并刷新 UI。</h5><h5 id="-5"><a href="#-5" class="headerlink" title=""></a></h5><h5 id="3-LiveData-实例使用-observe-方法添加观察者，并传入-LifecycleOwner，就是-Activity-本身。"><a href="#3-LiveData-实例使用-observe-方法添加观察者，并传入-LifecycleOwner，就是-Activity-本身。" class="headerlink" title="3. LiveData 实例使用 observe() 方法添加观察者，并传入 LifecycleOwner，就是 Activity 本身。"></a>3. <code>LiveData</code> 实例使用 <code>observe()</code> 方法添加观察者，并传入 <code>LifecycleOwner</code>，就是 <code>Activity</code> 本身。</h5><h5 id="-6"><a href="#-6" class="headerlink" title=""></a></h5><h5 id="4-LiveData-实例使用-setValue-postValue-更新源数据-（工作线程要使用-postValue-）"><a href="#4-LiveData-实例使用-setValue-postValue-更新源数据-（工作线程要使用-postValue-）" class="headerlink" title="4. LiveData 实例使用 setValue()/postValue() 更新源数据 （工作线程要使用 postValue()）"></a>4. <code>LiveData</code> 实例使用 <code>setValue()/postValue()</code> 更新源数据 （工作线程要使用 <code>postValue()</code>）</h5><h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">public class LiveDataTestActivity extends AppCompatActivity&#123;</span><br><span class="line"></span><br><span class="line">   private MutableLiveData&lt;String&gt; mLiveData;</span><br><span class="line"></span><br><span class="line">   @Override</span><br><span class="line">   protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">       super.onCreate(savedInstanceState);</span><br><span class="line">       setContentView(R.layout.activity_lifecycle_test);</span><br><span class="line"></span><br><span class="line">       //liveData基本使用</span><br><span class="line">       mLiveData = new MutableLiveData&lt;&gt;();</span><br><span class="line">       mLiveData.observe(this, new Observer&lt;String&gt;() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onChanged(String s) &#123;</span><br><span class="line">               Log.i(TAG, &quot;onChanged: &quot;+s);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">       Log.i(TAG, &quot;onCreate: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onCreate&quot;);//activity是非活跃状态，不会回调onChanged。变为活跃时，value被onStart中的value覆盖</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   protected void onStart() &#123;</span><br><span class="line">       super.onStart();</span><br><span class="line">       Log.i(TAG, &quot;onStart: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onStart&quot;);//活跃状态，会回调onChanged。并且value会覆盖onCreate、onStop中设置的value</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   protected void onResume() &#123;</span><br><span class="line">       super.onResume();</span><br><span class="line">       Log.i(TAG, &quot;onResume: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onResume&quot;);//活跃状态，回调onChanged</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   protected void onPause() &#123;</span><br><span class="line">       super.onPause();</span><br><span class="line">       Log.i(TAG, &quot;onPause: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onPause&quot;);//活跃状态，回调onChanged</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   protected void onStop() &#123;</span><br><span class="line">       super.onStop();</span><br><span class="line">       Log.i(TAG, &quot;onStop: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onStop&quot;);//非活跃状态，不会回调onChanged。后面变为活跃时，value被onStart中的value覆盖</span><br><span class="line">   &#125;</span><br><span class="line">   @Override</span><br><span class="line">   protected void onDestroy() &#123;</span><br><span class="line">       super.onDestroy();</span><br><span class="line">       Log.i(TAG, &quot;onDestroy: &quot;);</span><br><span class="line">       mLiveData.setValue(&quot;onDestroy&quot;);//非活跃状态，且此时Observer已被移除，不会回调onChanged</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -86,22 +81,22 @@
 <h5 id="使用方式："><a href="#使用方式：" class="headerlink" title="使用方式："></a>使用方式：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class MyFragment extends Fragment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onViewCreated(view, savedInstanceState);</span><br><span class="line">        //获取StockLiveData单实例，添加观察者，更新UI</span><br><span class="line">        StockLiveData.get(symbol).observe(getViewLifecycleOwner(), price -&gt; &#123;</span><br><span class="line">            // Update the UI.</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h5 id="其他示例，比如有一个登录验证码倒计时界面，在倒计时，需要在其他的页面也要同步这个倒计时状态，可以这样写："><a href="#其他示例，比如有一个登录验证码倒计时界面，在倒计时，需要在其他的页面也要同步这个倒计时状态，可以这样写：" class="headerlink" title="其他示例，比如有一个登录验证码倒计时界面，在倒计时，需要在其他的页面也要同步这个倒计时状态，可以这样写："></a>其他示例，比如有一个登录验证码倒计时界面，在倒计时，需要在其他的页面也要同步这个倒计时状态，可以这样写：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class GlobalLivedata : LiveData&lt;String&gt;() &#123;</span><br><span class="line">    val coundManager = CountDownManager()</span><br><span class="line">    val listener = object : OnDataChangeListener &#123;</span><br><span class="line">        override fun change(data: String) &#123;</span><br><span class="line">           postValue(data)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    override fun onActive() &#123;</span><br><span class="line">        super.onActive()</span><br><span class="line">        coundManager.setListener(listener)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    override fun onInactive() &#123;</span><br><span class="line">        super.onInactive()</span><br><span class="line">        coundManager.removeListener(listener)</span><br><span class="line">    &#125;</span><br><span class="line">    companion object &#123;</span><br><span class="line">        private lateinit var globalData: GlobalLivedata</span><br><span class="line">        fun getInstance(): GlobalLivedata &#123;</span><br><span class="line">            globalData = if (::globalData.isInitialized) globalData else GlobalLivedata()</span><br><span class="line">            return globalData</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
+ 
     </div>
     <footer class="article-footer">
-      <a data-url="https://liuhangya.github.io/2022/06/06/livedata/" data-id="cl42lefgd0006pga4cw51hd7d" class="article-share-link">
+      <!-- data-url="https://liuhangya.github.io/2022/06/06/livedata/"
+      data-id="cl43l8doq0005mwa46udzedzl"
+      class="article-share-link" -->
+      <a class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jetpack/" rel="tag">jetpack</a></li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jetpack-android/" rel="tag">jetpack android</a></li></ul>
 
     </footer>
-
   </div>
 
-  
-  
+   
 <nav class="article-nav">
   
   
@@ -111,9 +106,6 @@
   </a>
   
 </nav>
-
-  
-
   
   
 <div class="vcomments" id="vcomments"></div>
@@ -132,11 +124,9 @@
     placeholder: '请输入...'
   })
 </script>
-
   
-  
-
 </article>
+
 </section>
     <footer class="footer">
   <div class="outer">
