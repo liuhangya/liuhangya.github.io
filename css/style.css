@@ -1135,12 +1135,12 @@ img {
   }
   .wrap,
   .outer {
-    width: 70rem;
+    width: 100rem;
     padding-right: 0;
     padding-left: 0;
   }
   .local-search {
-    width: 70rem;
+    width: 80rem;
   }
   .card-quote {
     grid-template-columns: repeat(3, 1fr);
@@ -1492,7 +1492,7 @@ img {
 }
 .article-nav {
   position: relative;
-  padding-top: 3rem;
+  padding: 3rem;
   margin-top: 5rem;
   border-top: 0.1rem #e6e6e6 solid;
 }
@@ -1611,7 +1611,7 @@ img {
 .tocbot {
   position: absolute;
   top: 14rem;
-  left: calc((100vw - 70rem) / 2 + 70rem);
+  left: calc((100vw - 100rem) / 2 + 100rem);
   font-size: 80%;
   opacity: 0.8;
 }
@@ -1679,8 +1679,8 @@ a.toc-link {
 }
 .article-gallery-img img {
   display: block;
-  max-width: 100%;
-  margin: 0 auto;
+  max-width: 50%;
+  margin: 0 0;
 }
 .article-albums {
   position: relative;
