@@ -10,7 +10,7 @@
   <meta name="description" content="个人技术博客">
   
   <title>
-    about |
+    hexo命令使用 |
     
     fanda&#39;s blog
   </title>
@@ -36,8 +36,8 @@
   <main class="content">
     <section class="outer">
   <article
-  id="page-"
-  class="article article-type-page"
+  id="post-hexo-use"
+  class="article article-type-post"
   itemscope
   itemprop="blogPost"
   data-scroll-reveal
@@ -48,20 +48,48 @@
       
 
 <h1 class="article-title" itemprop="name">
-  about
+  hexo命令使用
 </h1>
 
 
 
     </header>
-      
+     
+    <div class="article-meta">
+      <a href="/2023/08/30/hexo-use/" class="article-date">
+  <time datetime="2023-08-30T06:51:01.000Z" itemprop="datePublished">2023-08-30</time>
+</a> 
+    </div>
+       
 
     <div class="article-entry" itemprop="articleBody">
-          
+         <p>hexo命令使用</p>
+<span id="more"></span>
+
+<ol>
+<li><p>hexo s或hexo server  : 启动服务，默认地址为<a target="_blank" rel="noopener" href="http://localhost:4000/%EF%BC%8C4000%E7%AB%AF%E5%8F%A3">http://localhost:4000/，4000端口</a></p>
+</li>
+<li><p>hexo d或hexo deploy  : 部署站点，在本地生成.deploy_git文件夹，并将编译后的文件上传至 GitHub。</p>
+</li>
+<li><p>hexo new xxx pagename  : 例如： hexo new photo “my-first-blog” 上述指令执行时，Hexo 会尝试在 scaffolds 中寻找photo.md布局，若找到，则根据该布局新建文章；若未找到或指令中未指定该参数，则使用post.md新建文章。新建文章的名称在_config.yml中配置。</p>
+</li>
+<li><p>hexo clean   : 将 public 文件夹删除</p>
+</li>
+<li><p>hexo g或hexo generate  ：该命令执行后在hexo站点根目录下生成public文件夹</p>
+</li>
+<li><p>可以这样创建指定目录下的文件 ： hexo new page -p git&#x2F;git_start</p>
+</li>
+</ol>
+<p>文章布局如下： </p>
+<hr>
+<p>title: livedata<br>date: 2022-06-06 14:23:54<br>&#x2F;&#x2F; 标签<br>tags: jetpack android<br>&#x2F;&#x2F; 是否置顶<br>top: ture<br>toc: ture<br>&#x2F;&#x2F; 这是封面图片<br>photos: [			<br>        [“<a target="_blank" rel="noopener" href="https://github.com/liuhangya/liuhangya.github.io/blob/main/gallery/index/juanjuan01.jpg?raw=true&quot;%5D">https://github.com/liuhangya/liuhangya.github.io/blob/main/gallery/index/juanjuan01.jpg?raw=true&quot;]</a><br>]</p>
+<hr>
+<p>这是显示在文章列表中的概要</p>
+<!--more--> 
     </div>
     <footer class="article-footer">
-      <!-- data-url="https://liuhangya.github.io/about/index.html"
-      data-id="cl43rxxvl00008ga407e368cp"
+      <!-- data-url="https://liuhangya.github.io/2023/08/30/hexo-use/"
+      data-id="cllxdu1260001fcb981ls3pfq"
       class="article-share-link" -->
       <!-- <a class="article-share-link">
         分享
@@ -70,7 +98,44 @@
     </footer>
   </div>
 
-     
+   
+<nav class="article-nav">
+  
+  <a href="/2023/08/30/git/git_start/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Git 初识
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2022/06/06/hello-world/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">livedata</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
 </article>
 
 </section>
@@ -80,6 +145,8 @@
       <ul class="list-inline">
   
   <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
   
 </ul>
     </div>
@@ -177,6 +244,24 @@
 
 
 
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
 
 
 

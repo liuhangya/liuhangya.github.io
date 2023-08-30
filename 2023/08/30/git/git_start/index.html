@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    Git 初识 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_start"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Git 初识
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/08/30/git/git_start/" class="article-date">
+  <time datetime="2023-08-30T07:11:26.000Z" itemprop="datePublished">2023-08-30</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>Git 初识</p>
+<span id="more"></span>
+
+<p> 查看版本： git –version</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-d3768894534cd8d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 查看配置列表： git  config –list</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-a4f6a00f1010046a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 配置用户名和邮箱地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;fanda&quot;</span><br><span class="line"></span><br><span class="line">git config --global user.email &quot;xxxx.com&quot;</span><br></pre></td></tr></table></figure>
+<p> 单独查询某条配置：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-8583ac5c498112e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 开始详细操作演示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-f74af3a92127915e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 操作文件夹为:  e&#x2F;git_study&#x2F;demo</p>
+<p>通过 git init 命令来初始化版本库，默认会在工作区创建一个隐藏目录 .git  ，这个 .git 就是版本仓库 ，可通过 ls -a 来查看隐藏的目录。</p>
+<p>现在 demo 目录就是工作区，目前除了 .git 目录外空无一物。</p>
+<p> 添加一个文件 welcome.txt 并编辑内容为 Hello.</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-a7150f98d9793d16.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 通过 git status 来查看当前工作区的状态如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-082e623b298e22a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br> 明确提示，没有任何内容可提交，但是出现了未被追踪的文件，应该先通过 git add 将文件追踪。</p>
+<p>添加并提交文件：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-ae5922f4c94f7644.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 提交结果说明：</p>
+<ol>
+<li><p>第一行: 在名为 master 的分支上，且是该分支的第一个提交(root-commit) ，提交ID为 22d9b0e ，提交描述为 initialized. 。</p>
+</li>
+<li><p>第二行: 提交修改了一个文件，包含一行插入。</p>
+</li>
+<li><p>此次提交创建了新文件 welcome.txt 。</p>
+</li>
+</ol>
+<p> 说明： .git 所在目录就是工作区的根目录，git 的相关操作要在工作区中操作才能正常执行，当在工作区的子目录中操作时，会递归查找 .git 目录。</p>
+<p> 在工作区外操作会报如下错误：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-8abcd0b566960a07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 可通过  git rev-parse –git-dir 命令来查看 .git 所在的目录 ：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-b5243ecd4be52312.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 可通过 git rev-parse –show-toplevel 命令来查看工作区根目录：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3511431-037bf50fa4429e29.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p> 备份仓库，可通过 git clone 命令 ：<br><img src="https://upload-images.jianshu.io/upload_images/3511431-cc08cb62f63568b8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>如上，我们把 demo 备份为了名为 demo-step-1 的文件夹。</p>
+<p> 注意：目录路径为 git_study ，而不是 demo ，是 demo 的上一级 。</p>
+<p> 三个不同级别的配置文件：</p>
+<ol>
+<li><p>版本库的配置文件：就是当前工作区的 .git&#x2F;config 文件 。  命令 git config -e 可查看 , :wq 退出编辑，注意先输入冒号</p>
+</li>
+<li><p>全局配置文件：用户主目录下的 .gitconfig文件 。命令 git config -e –global 可查看 , :wq 退出编辑，注意先输入冒号</p>
+</li>
+<li><p>系统级配置文件： &#x2F;etc 目录下。命令 git config -e –system 可查看 , :q 退出编辑，注意先输入冒号，系统文件不可写</p>
+</li>
+</ol>
+<p> 优先级：版本库级别的配置文件的优先级最高，全局配置文件次之，系统级配置文件排最后。相同的配置按优先级进行覆盖。</p>
+<p>总结： 版本创建三部曲，git init 、git add 、git commit 。</p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/08/30/git/git_start/"
+      data-id="cllxen46100000wb99rlffax2"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  <a href="/2023/08/30/android/architecture/architecture/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Android 架构演进理念分析
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/08/30/hexo-use/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">hexo命令使用</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
