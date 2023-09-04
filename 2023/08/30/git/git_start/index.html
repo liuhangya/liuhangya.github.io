@@ -66,59 +66,63 @@
          <p>Git 初识</p>
 <span id="more"></span>
 
-<p> 查看版本： git –version</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-d3768894534cd8d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br><img src="/2023/08/30/git/git_start/start1.png"></p>
-<p> 查看配置列表： git  config –list</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-a4f6a00f1010046a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 配置用户名和邮箱地址：</p>
+<p><strong>查看版本：</strong> <code>git --version</code></p>
+<p><img src="/2023/08/30/git/git_start/start1.png"></p>
+<p><strong>查看配置列表：</strong> <code>git config --list</code></p>
+<p><img src="/2023/08/30/git/git_start/start2.png"></p>
+<p><strong>配置用户名和邮箱地址：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;fanda&quot;</span><br><span class="line"></span><br><span class="line">git config --global user.email &quot;xxxx.com&quot;</span><br></pre></td></tr></table></figure>
-<p> 单独查询某条配置：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-8583ac5c498112e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 开始详细操作演示：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-f74af3a92127915e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 操作文件夹为:  e&#x2F;git_study&#x2F;demo</p>
-<p>通过 git init 命令来初始化版本库，默认会在工作区创建一个隐藏目录 .git  ，这个 .git 就是版本仓库 ，可通过 ls -a 来查看隐藏的目录。</p>
-<p>现在 demo 目录就是工作区，目前除了 .git 目录外空无一物。</p>
-<p> 添加一个文件 welcome.txt 并编辑内容为 Hello.</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-a7150f98d9793d16.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 通过 git status 来查看当前工作区的状态如下：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-082e623b298e22a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br> 明确提示，没有任何内容可提交，但是出现了未被追踪的文件，应该先通过 git add 将文件追踪。</p>
-<p>添加并提交文件：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-ae5922f4c94f7644.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 提交结果说明：</p>
+
+<p><strong>单独查询某条配置，比如：</strong></p>
+<p><img src="/2023/08/30/git/git_start/start3.png"></p>
+<p><strong>开始详细操作演示：</strong></p>
+<p><img src="/2023/08/30/git/git_start/start4.png"></p>
+<p>**操作文件夹为: ** <code>e/git_study/demo</code></p>
+<p>通过 <code>git init</code> 命令来初始化版本库，默认会在工作区创建一个隐藏目录 <code>.git</code>  ，这个 <code>.git</code> 就是版本仓库 ，可通过 <code>ls -a</code> 查看隐藏的目录。</p>
+<p>现在 <code>demo</code> 目录就是工作区，目前除了 <code>.git</code> 目录外空无一物。</p>
+<p>我们添加一个文件 <code> welcome.txt</code> 并编辑内容为 <code>Hello.</code></p>
+<p><img src="/2023/08/30/git/git_start/start5.png"></p>
+<p>可通过 <code>git status</code> 来查看当前工作区的状态如下：</p>
+<p><img src="/2023/08/30/git/git_start/start6.png"></p>
+<p>输出表示，没有任何内容可提交，但是出现了未被追踪的文件，应该先通过 <code>git add</code> 将文件追踪。</p>
+<p><strong>添加并提交文件：</strong></p>
+<p><img src="/2023/08/30/git/git_start/start7.png"></p>
+<p><strong>提交结果说明：</strong></p>
 <ol>
-<li><p>第一行: 在名为 master 的分支上，且是该分支的第一个提交(root-commit) ，提交ID为 22d9b0e ，提交描述为 initialized. 。</p>
+<li><p>第一行: 在名为 <code>master</code> 的分支上，且是该分支的第一个提交( <code>root-commit</code> ) ，提交 <code>ID</code> 为 <code>174d90b</code> ，提交描述为 <code>initialized.</code> 。</p>
 </li>
 <li><p>第二行: 提交修改了一个文件，包含一行插入。</p>
 </li>
-<li><p>此次提交创建了新文件 welcome.txt 。</p>
+<li><p>第三行：此次提交创建了新文件 <code>welcome.txt</code> 。</p>
 </li>
 </ol>
-<p> 说明： .git 所在目录就是工作区的根目录，git 的相关操作要在工作区中操作才能正常执行，当在工作区的子目录中操作时，会递归查找 .git 目录。</p>
-<p> 在工作区外操作会报如下错误：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-8abcd0b566960a07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 可通过  git rev-parse –git-dir 命令来查看 .git 所在的目录 ：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-b5243ecd4be52312.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 可通过 git rev-parse –show-toplevel 命令来查看工作区根目录：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/3511431-037bf50fa4429e29.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p> 备份仓库，可通过 git clone 命令 ：<br><img src="https://upload-images.jianshu.io/upload_images/3511431-cc08cb62f63568b8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>如上，我们把 demo 备份为了名为 demo-step-1 的文件夹。</p>
-<p> 注意：目录路径为 git_study ，而不是 demo ，是 demo 的上一级 。</p>
-<p> 三个不同级别的配置文件：</p>
-<ol>
-<li><p>版本库的配置文件：就是当前工作区的 .git&#x2F;config 文件 。  命令 git config -e 可查看 , :wq 退出编辑，注意先输入冒号</p>
+<p><strong>阶段性总结：<code>.git</code> 所在目录就是工作区的根目录，<code>git</code> 的相关操作要在工作区中才能正常执行，当在工作区的子目录中操作时，会递归查找 <code>.git</code> 目录。</strong></p>
+<p><strong>如果在工作区外操作，会报错：</strong></p>
+<p><img src="/2023/08/30/git/git_start/start8.png"></p>
+<p>可通过 <code>git rev-parse --git-dir</code> 命令来查看 <code>.git</code> 所在的目录 ：</p>
+<p><img src="/2023/08/30/git/git_start/start9.png"></p>
+<p>可通过 <code>git rev-parse --show-toplevel</code> 命令来查看工作区根目录：</p>
+<p><img src="/2023/08/30/git/git_start/start10.png"></p>
+<p>可通过 <code> git clone</code> 命令来备份仓库 ：</p>
+<p><img src="/2023/08/30/git/git_start/start11.png"></p>
+<p>如上，我们把 <code>demo</code> 备份为了名为 <code>demo-step-1</code> 的文件夹。</p>
+<p><strong>注意：备份时，目录路径为 <code>git_study</code> ，而不是 <code>demo</code> ，是 <code>demo</code> 的上一级 。</strong></p>
+<p><strong>三个不同级别的配置文件：</strong></p>
+<ul>
+<li><p>版本库的配置文件：就是当前工作区的 <code>.git/config</code> 文件 。 <code>git config -e</code> 命令可查看 , <code>:wq</code> 退出编辑，注意先输入冒号。</p>
 </li>
-<li><p>全局配置文件：用户主目录下的 .gitconfig文件 。命令 git config -e –global 可查看 , :wq 退出编辑，注意先输入冒号</p>
+<li><p>全局配置文件：用户主目录下的 <code>.gitconfig</code> 文件 。 <code>git config -e --global</code> 命令可查看 , <code>:wq</code> 退出编辑，注意先输入冒号。</p>
 </li>
-<li><p>系统级配置文件： &#x2F;etc 目录下。命令 git config -e –system 可查看 , :q 退出编辑，注意先输入冒号，系统文件不可写</p>
+<li><p>系统级配置文件： <code>/etc</code> 目录下。命令 <code>git config -e --system</code> 可查看 , <code>:q</code> 退出编辑，注意先输入冒号，系统文件不可写。</p>
 </li>
-</ol>
-<p> 优先级：版本库级别的配置文件的优先级最高，全局配置文件次之，系统级配置文件排最后。相同的配置按优先级进行覆盖。</p>
-<p>总结： 版本创建三部曲，git init 、git add 、git commit 。</p>
+</ul>
+<p><strong>配置文件生效优先级：版本库级别的配置文件的优先级最高，全局配置文件次之，系统级配置文件排最后。相同的配置按优先级进行覆盖。</strong></p>
+<p><strong>总结：版本创建三部曲，<code>git init</code> 、<code>git add</code> 、<code>git commit</code> 。</strong></p>
  
     </div>
     <footer class="article-footer">
       <!-- data-url="https://liuhangya.github.io/2023/08/30/git/git_start/"
-      data-id="cllxlil4i000aqkb97evmh1q8"
+      data-id="clm4cs2d6000ml4b94fq50epm"
       class="article-share-link" -->
       <!-- <a class="article-share-link">
         分享
@@ -132,11 +136,11 @@
    
 <nav class="article-nav">
   
-  <a href="/2023/08/30/android/architecture/architecture/" class="article-nav-link">
+  <a href="/2023/08/31/git/git_staged/" class="article-nav-link">
     <strong class="article-nav-caption">前一篇</strong>
     <div class="article-nav-title">
       
-      Android 架构演进分析和代码演示
+      Git 暂存区
       
     </div>
   </a>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    Git 检出 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_checkout"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Git 检出
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/08/31/git/git_checkout/" class="article-date">
+  <time datetime="2023-08-31T08:29:37.000Z" itemprop="datePublished">2023-08-31</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>Git 检出</p>
+<span id="more"></span>
+
+<p>在上一节，我们使用 <code>reset</code> 命令修改了引用分支的游标位置，让分支引用(比如：<code>master</code> 分支) 指向不同的提交 <code>ID</code> ，达到切换不同历史版本内容。我们默认操作的就是 <code>master</code> 分支，因为 <code>.git/HEAD</code> 指向的引用就是 <code>refs/heads/master</code> 。怎么改变 <code>HEAD</code> 的指向呢？改变之后又有什么影响呢？下面通过 <code>checkout</code> 命令的使用来仔细分析一下。</p>
+<p><code>HEAD</code> 的理解 ： 是头指针，当有提交时， <code>HEAD</code> 指向的提交将会作为新提交的父级提交（变成老二了，老大是新的提交） 。</p>
+<p>首先，看一下目前 <code> HEAD</code> 指向是什么：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout1.png"></p>
+<p>可以看出，目前指向了分支 master ，可以通过如下命令查看目前所在分支信息：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout2.png"></p>
+<p>再看一下我们现有的提交记录：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout3.png"></p>
+<p>现在我们检出 befeee4 这个提交，看看会怎样：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout4.png"></p>
+<p>输出了一大段内容，大概意思如下：</p>
+<blockquote>
+<p>您正处于 “分离头指针” 状态，您可以检查、测试和提交而不影响任何分支。如果想保留此状态下的修改和提交，使用 <code>-c</code> 参数调用 <code>switch</code> 命令来创建新的跟踪分支。如 ：<code> git switch -c &lt;new-branch-name&gt;</code> ，您现在处于 <code>befeee4</code> ，提交说明为 <code>check staged -- nice to  meet you.</code></p>
+</blockquote>
+<p>查看一下此时的 <code>HEAD</code> 保存的内容：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout5.png"></p>
+<p>可以看到，保存的是一个具体的提交 <code>ID</code> ，而不是保存（分支）引用。</p>
+<p>阶段性总结： “分离头指针” 状态指的就是 <code>HEAD</code> 头指针指向了一个提交 ID，而不是一个引用（分支）。</p>
+<p>通过 <code>reflog</code> 查看日志时，也可以看到 <code>HEAD</code>  头指针更改了：由指向 <code>master</code> 分支变成了指向一个提交 <code>ID</code> 。</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout6.png"></p>
+<p><strong>注意区分是 <code>master</code> 分支的变更还是 <code>HEAD</code> 头指针的变迁记录</strong></p>
+<p>我们查一下当前的 <code>HEAD</code> 和 <code>master</code> 对应的提交 <code>ID</code> ，会发现它们的指向并不一样：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout7.png"></p>
+<p>可以看到，<code>master</code> 分支的指向并没有改变，仍旧指向原有的提交 <code>ID</code> ，这也说明了 <code>checkout</code> 命令和 <code>reset</code> 命令不同。</p>
+<p>接下来，我们进行一些操作，分析一下输出结果 ：</p>
+<ol>
+<li>创建一个新文件（detached-commit.txt）并添加到暂存区中，查看一下状态：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout8.png"></p>
+<pre><code>输出表明：当前处于 “分离头状态”，其实截图红框已经显示当前不处于任何分支中，而处于某个提交 `ID` 。
+</code></pre>
+<ol start="2">
+<li>进行提交：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout9.png"></p>
+<pre><code>输出表明：提交成功了，此时头指针指向了新的提交 `08b3f7e` 。
+</code></pre>
+<ol start="3">
+<li>再次查看当前的 <code>HEAD</code> 内容：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout10.png"></p>
+<pre><code>输出表明：仍然指向一个具体的 `ID` ，但是这个 ID 变成了最新的提交 `ID` 了，它的父 ID 是原来的 `befeee4`。在 `befeee4` 出现了分叉，分别指向 `08b3f7e` 和 `master` 分支原先的提交，因为 `08b3f7e` 本来就是 `master` 的历史提交。
+</code></pre>
+<ol start="4">
+<li>查看一下提交日志，会发现：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout11.png"></p>
+<pre><code>输出表明：新的提交确实是建立在之前的提交基础上的。
+</code></pre>
+<ol start="5">
+<li>切换回到 <code>master</code> 分支 ：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout13.png"></p>
+<pre><code>输出表明：已经切换到了 `master` 分支，但是在分离头状态有一个提交，最好通过 `branch` 命令给这个提交创建一个新分支。
+</code></pre>
+<ol start="6">
+<li>再次查看当前的 <code>HEAD</code> 内容：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout14.png"></p>
+<pre><code>输出表明：变回 `master` 引用 ，而不是具体提交 `ID` 了。
+</code></pre>
+<ol>
+<li>查询一下当前的提交历史：</li>
+</ol>
+<p><img src="/2023/08/31/git/git_checkout/checkout15.png"></p>
+<pre><code>输出表明：完全是之前 master 的提交历史了，之前在分离头状态的提交查不到了，新增的文件也不见了。
+</code></pre>
+<p>我们之前在分离头状态的提交还存在于版本库的对象库中吗？</p>
+<p>我们验证一下：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout16.png"></p>
+<p>可以看到这个提交仍在版本库中。<br><strong>注意：由于这个提交没有被任何分支跟踪，因此并不能保证这个提交会永久存在。实际上当 reflog 中含有该提交的日志过期后，这个提交随时都会从版本库中移除</strong>。</p>
+<p>因为没有给提交 <code>ID</code> （<code>08b3f7e</code>）创建分支来跟踪，所以不能通过分支引用来访问，而且随时可能被清除（实际项目中要新建分支来追踪），非常不方便。</p>
+<p>如果这个提交是 <code>master</code> 分支所需要的，怎么办呢？</p>
+<p>答：不能用 <code>reset</code> 命令，那样会丢掉 <code>master</code> 分支原来的提交，相当于现在历史链条中存在了分叉路，只能使用 <code>merge</code> 命令进行合并操作。</p>
+<p>方案确认了，开始进行具体的合并操作：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout17.png"></p>
+<p>先确认了当前处于哪个分支，接着进行 <code>merge</code> 操作，然后查看了文件列表和提交日志。日志表明出现了分叉，<code>31ab701</code> 在<code> master</code> 分支，<code>08b3f7e</code> 在分离头状态下提交的，最终在合并在新的提交 ID <code>4448fe87</code> 中 。</p>
+<p>如果仔细查看一下最新提交，会发现这个提交有两个父提交，这就是合并的奥秘：</p>
+<p><img src="/2023/08/31/git/git_checkout/checkout18.png"></p>
+<p>最后，我们再深入了解一下 <code>git checkout</code> 命令：</p>
+<ol>
+<li><p><code>git checkout &lt;branch&gt;</code></p>
+<p>这种用法会改变 <code>HEAD</code> 头指针，通过切换分支来对提交进行跟踪，主要作用就是切换分支。</p>
+</li>
+<li><p><code>git checkout [-m] [-b|--orphan &lt;new_branch&gt;] [start_point]</code></p>
+<p> 这种用法主要是创建并切换到新的分支，新的分支从 <code>start_point</code> 指定的提交开始创建(默认从最新提交开始)。新分支和 <code>master</code> 分支没有什么不一样的，都是 <code>refs/heads</code> 命名空间下的引用。</p>
+</li>
+<li><p><code>git checkout branch</code> </p>
+<p> 检出 <code>branch</code> 分支 ，更新 <code>HEAD</code> 指向 <code>branch</code> 分支，以及用 <code>branch</code> 指向的树更新暂存区和工作区。</p>
+</li>
+<li><p><code>git checkout -- filename</code> </p>
+<p> 用暂存区中的 <code>filename</code> 文件覆盖工作区中的 <code>filename</code> 文件 。相当于取消自上次执行 <code>git add filename</code> 以来的本地修改。</p>
+</li>
+<li><p><code>git checkout branch -- filename</code></p>
+<p><code>HEAD</code> 的指向不变，用 <code>branch</code> 所指向的分支的提交中的 <code>filename</code> 文件替换暂存区和工作中相应的文件，会直接覆盖掉。</p>
+</li>
+<li><p><code>git checkout .</code> </p>
+<p> 这条命令比较危险，会直接取消本地的所有修改，相当于用暂存区的所有文件直接覆盖本地文件，不给用户任何确认的机会！</p>
+</li>
+</ol>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/08/31/git/git_checkout/"
+      data-id="clm4cs2cz000al4b9arvbf8d1"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  <a href="/2023/08/31/git/git_stash/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Git 恢复进度
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/08/31/git/git_reset/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 重置</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

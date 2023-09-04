@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    Git 对象 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_object"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Git 对象
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/08/31/git/git_object/" class="article-date">
+  <time datetime="2023-08-31T06:39:37.000Z" itemprop="datePublished">2023-08-31</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>Git 对象</p>
+<span id="more"></span>
+
+<p>我们先查看一下当前最新的提交日志(<code>-1</code> 表明最新一条，<code>--pretty=raw</code> 表示详细输出 )：</p>
+<p><img src="/2023/08/31/git/git_object/object1.png"></p>
+<p>一个提交包含三个哈希值：</p>
+<ul>
+<li><p>commit ： 表示这是本次提交的唯一标识。</p>
+</li>
+<li><p>tree ： 表示这是本次提交所对应的目录树。</p>
+</li>
+<li><p>parent ： 表示本地提交的父提交（上一次提交）。</p>
+</li>
+</ul>
+<p>可以通过 <code>git cat-file -t</code> 命令查看 <code>ID</code> 的类型 ：</p>
+<p><img src="/2023/08/31/git/git_object/object2.png"></p>
+<p>在引用对象 <code>ID</code> 时，可以不写全 40 位，只要开头几位不冲突即可。</p>
+<p>可以通过 <code>git cat-file -p</code> 命令 查看 <code>ID</code> 的内容 ：</p>
+<p><img src="/2023/08/31/git/git_object/object3.png"></p>
+<p>接着，我们查看当前 <code>tree ID</code> 的内容 ：</p>
+<p><img src="/2023/08/31/git/git_object/object4.png"></p>
+<p>根据 <code>tree ID</code> 的内容可知道具体保存的内容的 <code>ID</code> ，我们查看这个内容 <code>ID</code>（应该是一个类似指针一样的，指向具体保存的内容）：</p>
+<p><img src="/2023/08/31/git/git_object/object5.png"></p>
+<p>里面的内容就是我们第二次提交的 <code>welcome.txt</code> 文件保存的内容。（每次提交涉及到的文件的最新内容都会被保存在当前提交中，用于文件恢复和对比等操作）</p>
+<p>我们再查一下最初提交的内容（在这里刚好是 <code>perent ID</code> 的内容）：</p>
+<p><img src="/2023/08/31/git/git_object/object6.png"></p>
+<p>很清楚，我们第一次提交的 <code>welcome.txt</code> 文件内容就是 <code>Hello.</code></p>
+<p>这些文件内容都保存在 <code>.git/objects</code> 目录下，<code>ID</code> 前两位做为目录名，后 38 位作为文件名。</p>
+<p><img src="/2023/08/31/git/git_object/object7.png"></p>
+<p>阶段性总结：文件树中记录了当前提交的各个文件的修改信息，通过 <code>ID</code> 找到 <code>.git/objects</code> 下对应的文件内容。</p>
+<p>在上一节，我们通过 <code>git stash</code> 来保存了我们修改的内容，工作区中干净的，用【精简并显示分支】的形式查看状态看看：</p>
+<p><img src="/2023/08/31/git/git_object/object8.png"></p>
+<p>也可以通过<code> git branch</code> 命令来查看当前工作的分支，星号表示这个分支是当前分支，目录暂无其他分支（分支内容后面再介绍）。</p>
+<p><img src="/2023/08/31/git/git_object/object9.png"></p>
+<p>输出表明，我们现处于 <code>master</code> 分支中，这是什么意思呢？暂时先不管，我们运行以下三个命令来看下结果是什么：</p>
+<p><img src="/2023/08/31/git/git_object/object10.png"></p>
+<p>输出表明，在当前版本库中，<code>HEAD</code> 、<code>master</code> 和 <code>refs/heads/master</code> 具有相同的指向。</p>
+<p><img src="/2023/08/31/git/git_object/object11.png"></p>
+<p>通过上述命令，我们知道了 <code>HEAD</code> 和 <code>master</code>  的文件路径，<code>logs</code> 目录下的文件暂不研究。</p>
+<p>那么 <code>HEAD</code> 和 <code>master</code> 保存的内容是什么呢？</p>
+<p><img src="/2023/08/31/git/git_object/object12.png"></p>
+<p>总结：</p>
+<ol>
+<li><p><code>HEAD</code> 保存的其实是指向的一个引用，这个引用就是当前的分支，现在指向的分支是  <code>.git/refs/heads/master</code> ，分支名叫 <code>master</code> ，所以 <code>git log -1 refs/heads/master</code> 和 <code>git log -1 master</code> 是等价的，后者只是简写而已。后续如果有不同的分支，每个分支会生成一个文件保存在这个目录下。</p>
+</li>
+<li><p>分支文件保存的内容是当前分支最新的提交 <code>ID</code> ，根据该 <code>ID</code> 可以查到最新的提交记录，而根据记录的 <code>parent ID</code> 可以知道上一次提交记录，这样就能追踪到完整的提交历史记录链，真的是相当巧妙！</p>
+</li>
+</ol>
+<p>如下是一个更接近于真实的版本库结构图：</p>
+<p><img src="/2023/08/31/git/git_object/object13.png"></p>
+<p>其实 Git 还有一个命令可以用于显示对应的提交 ID ，如下：</p>
+<p><img src="/2023/08/31/git/git_object/object14.png"></p>
+<p> Git 中提供了很多方法可以方便地访问库中的对象：</p>
+<p><img src="/2023/08/31/git/git_object/object15.png"></p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/08/31/git/git_object/"
+      data-id="clm4cs2cz000bl4b97uwha7k2"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  <a href="/2023/08/31/git/git_reset/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Git 重置
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/08/31/git/git_staged/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 暂存区</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

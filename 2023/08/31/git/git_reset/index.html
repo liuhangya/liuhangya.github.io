@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    Git 重置 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_reset"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Git 重置
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/08/31/git/git_reset/" class="article-date">
+  <time datetime="2023-08-31T07:20:00.000Z" itemprop="datePublished">2023-08-31</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>Git 重置</p>
+<span id="more"></span>
+
+<p>首先，我们看一下版本库提交历史记录：</p>
+<p><img src="/2023/08/31/git/git_reset/reset1.png"></p>
+<p>通过 <code>--oneline</code> 可以显示更短小的提交 <code>ID</code> 。</p>
+<p>如果我们改变了分支文件中记录的提交 <code>ID</code> ，是不是就可以实现任意提交历史的内容切换呢？是的 ，接下来通过研究 <code>git reset</code> 命令来改变分支引用文件的提交 <code>ID</code>，实现分支内容的重置。</p>
+<p>那么，开始操作吧，先看看现在分支中指向的提交 <code>ID</code> 是什么：</p>
+<p><img src="/2023/08/31/git/git_reset/reset2.png"></p>
+<p>正是我们第二次提交的 <code>ID</code> 。</p>
+<p>接下来我们创建一个文件，再进行一次提交，看看 <code>master</code> 分支会不会自动指向最新的提交 <code>ID</code> ：</p>
+<p><img src="/2023/08/31/git/git_reset/reset3.png"></p>
+<p>果然指向了最新的提交 <code>ID</code> 。</p>
+<p><strong><code>master</code> 就像一个游标，可上下浮动，最上方就是指向最新的提交 ID ，向下就可以指向历史提交了，而改变这个游标位置的命令就是 reset 命令</strong>。</p>
+<p><code>reset</code> 命令会有一些参数，接下来会细讲。</p>
+<p>我们可以通过 <code>reset</code> 回到上一次的提交记录，如下：</p>
+<p><img src="/2023/08/31/git/git_reset/reset4.png"></p>
+<p>输出表明，确实回到上一次提交了，最新的提交记录和文件都不见了。</p>
+<p>其实我们可以通过提交 <code>ID</code> 来重置到任意提交记录，我们重置到初始的提交记录试试：</p>
+<p><img src="/2023/08/31/git/git_reset/reset5.png"></p>
+<p>重置成功了， <code>welcome.txt</code> 文件内容只有 <code> Hello.</code>  了 。</p>
+<p>注意：重置后，历史记录也被丢弃了，通过 <code>git log</code> 命令查询到的历史记录只能从当前的记录到以前的记录，比如现在我们查询到的历史记录只有一条了。</p>
+<p>那我们怎么重置到最近的提交记录呢？</p>
+<p>答：还有一个挽救机制，通过 <code>.git/logs</code> 目录下的日志文件，该日志文件记录了分支的各种变更。**</p>
+<p>我们通过 <code>tail</code> 命令查看一下最后5行的文件内容：</p>
+<p><img src="/2023/08/31/git/git_reset/reset6.png"></p>
+<p>最新的变更是追加到后面的，这个日志文件很明确地显示了提交 <code>ID</code> 的变动以及变动原因，是 <code>commit</code> 还是 <code>reset</code> 还可能是其他的原因。</p>
+<p>通过 <code>git reflog</code> 命令也可以对这个文件进行操作，使用 <code>show</code> 子命令可以显示文件内容：</p>
+<p><img src="/2023/08/31/git/git_reset/reset7.png"></p>
+<p>与通过 <code>tail</code> 直接查询文件内容不同，最新的改变是显示到最前面的，而且只显示每次操作后的最终的提交 <code>ID</code> ，还有一个容易记忆的 <code>&lt;refname&gt;@&#123;n&#125;</code> 表达式代表指向的提交 <code>ID</code> ，这里的 <code>refname</code> 代表的引用名，这里是 <code>master</code> 。 <code>master@&#123;2&#125;</code> 代表 <code>31ab701</code></p>
+<p>现在，我们回到最新的提交：</p>
+<p><img src="/2023/08/31/git/git_reset/reset8.png"></p>
+<p>工作区中新增的文件回来了，提交历史也回来了。如果此时我们通过 <code>reflog</code> 查看，就会看到恢复 <code>master</code> 的操作也记录在日志中了：</p>
+<p><img src="/2023/08/31/git/git_reset/reset9.png"></p>
+<p>reset 命令是常用的命令之一，同时也是最危险最容易误用的命令，常用用法如下：</p>
+<p> <code>git reset [ --soft | --mixed | --hard ] [commit]</code></p>
+<ol>
+<li><p>使用参数 <code>--soft</code> ，如： git reset –soft [commit] ，会有如下改动：</p>
+<p><strong>替换引用，指向目标记录ID 。不改变暂存区和工作区。</strong></p>
+</li>
+<li><p>使用参数 <code>--mixed</code> 或不使用参数（默认就是 <code>--mixed</code>），如： <code>git reset --mixed [commit]</code> ，会有如下改动：</p>
+<p><strong>替换引用，指向目标记录ID 。替换暂存区，暂存区的内容和引用指向的目录树内容一致。但不改变工作区。</strong></p>
+</li>
+<li><p>使用参数 <code>--hard</code>  ，如： <code>git reset --hard [commit]</code> ，会有如下改动：</p>
+<p><strong>替换引用，指向目标记录ID 。替换暂存区，暂存区的内容和引用指向的目录树内容一致。并且替换工作区，工作区和暂存区和引用指向的目录树内容一致。</strong></p>
+</li>
+</ol>
+<p>最后，我们再看一下 <code>reset</code> 命令的不同用法：</p>
+<ul>
+<li><p>命令： <code>git reset</code> ，相当于 <code>git reset HEAD</code> ，相当于 <code>git reset --mixed HEAD</code> </p>
+<p>仅用 <code>HEAD</code> 指向的目录树重置暂存区、工作区不受影响，相当于之前用 <code>git add</code> 命令添加到暂存区的内容撤出暂存区。引用的提交 <code>ID</code> 不变。</p>
+</li>
+<li><p>命令：<code>git reset -- filename</code> ，相当于 <code>git reset HEAD --filename</code> </p>
+<p>仅将文件 <code>filename</code> 的改动撤出暂存区，其他文件不变。相当于命令 <code>git add filename</code> 的反向操作 。</p>
+</li>
+<li><p>命令：<code>git reset HEAD^</code> ，相当于 <code>git reset --mixed HEAD^</code> 。</p>
+<p>工作区不改变，但是暂存区会回退到上一次提交之前，引用也会回退到上一次 。</p>
+</li>
+<li><p>命令：<code>git reset --hard HEAD^ </code></p>
+<p>工作区、暂存区和引用全都回退到上一次提交的状态，最新的提交内容全部丢掉 。</p>
+</li>
+</ul>
+<p><strong>其他知识：<code>.git/COMMIT_EDITMSG</code>  文件保存了目前最新的提交描述说明，当前提交说明如下：</strong></p>
+<p><img src="/2023/08/31/git/git_reset/reset10.png"></p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/08/31/git/git_reset/"
+      data-id="clm4cs2d1000el4b946icekbd"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  <a href="/2023/08/31/git/git_checkout/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Git 检出
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/08/31/git/git_object/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 对象</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
