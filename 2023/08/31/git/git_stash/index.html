@@ -95,7 +95,7 @@
 </ol>
 <p><img src="/2023/08/31/git/git_stash/stash8.png"></p>
 <p><img src="/2023/08/31/git/git_stash/stash9.png"></p>
-<p>这是 <code>reset</code> 的另一种用法，该用法不会改变引用，也不会改变工作区，而是用指定提交状态下（这里是 <code>HEAD</code>）的文件替换掉暂存区中的文件。会回到 <code>git add</code> 命令之前的状态</p>
+<p>这是 <code>reset</code> 的另一种用法，该用法不会改变引用，也不会改变工作区，而是用指定提交状态下（这里是 <code>HEAD</code>）的文件替换掉暂存区中的文件。会回到 <code>git add</code> 命令之前的状态。</p>
 <ol start="4">
 <li>突然又不想提交 <code>welcome.txt</code> 文件，想从暂存区撤出（<code>git reset</code> 等价于 <code>git reset --mixed HEAD</code>） ：</li>
 </ol>
@@ -164,8 +164,7 @@
 <li>原基线和原暂存区的差异比较：</li>
 </ol>
 <p><img src="/2023/08/31/git/git_stash/stash27.png"></p>
-<pre><code>刚好是第一次保存时，暂存区添加了新文件 `hack-1.txt` 并在里面添加了一行 `hello.` ;(不记得可以往前面的内容再看一下)
-</code></pre>
+<p>刚好是第一次保存时，暂存区添加了新文件 <code>hack-1.txt</code> 并在里面添加了一行 <code>hello.</code> ;(不记得可以往前面的内容再看一下)</p>
 <ol start="2">
 <li>原暂存区和原工作区的差异比较：</li>
 </ol>

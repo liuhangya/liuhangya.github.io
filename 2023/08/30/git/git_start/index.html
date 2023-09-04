@@ -67,26 +67,26 @@
 <span id="more"></span>
 
 <p><strong>查看版本：</strong> <code>git --version</code></p>
-<p><img src="/2023/08/30/git/git_start/start1.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start1.png?raw=true"></p>
 <p><strong>查看配置列表：</strong> <code>git config --list</code></p>
-<p><img src="/2023/08/30/git/git_start/start2.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start2.png?raw=true"></p>
 <p><strong>配置用户名和邮箱地址：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;fanda&quot;</span><br><span class="line"></span><br><span class="line">git config --global user.email &quot;xxxx.com&quot;</span><br></pre></td></tr></table></figure>
 
 <p><strong>单独查询某条配置，比如：</strong></p>
-<p><img src="/2023/08/30/git/git_start/start3.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start3.png?raw=true"></p>
 <p><strong>开始详细操作演示：</strong></p>
-<p><img src="/2023/08/30/git/git_start/start4.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start4.png?raw=true"></p>
 <p>**操作文件夹为: ** <code>e/git_study/demo</code></p>
 <p>通过 <code>git init</code> 命令来初始化版本库，默认会在工作区创建一个隐藏目录 <code>.git</code>  ，这个 <code>.git</code> 就是版本仓库 ，可通过 <code>ls -a</code> 查看隐藏的目录。</p>
 <p>现在 <code>demo</code> 目录就是工作区，目前除了 <code>.git</code> 目录外空无一物。</p>
 <p>我们添加一个文件 <code> welcome.txt</code> 并编辑内容为 <code>Hello.</code></p>
-<p><img src="/2023/08/30/git/git_start/start5.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start5.png?raw=true"></p>
 <p>可通过 <code>git status</code> 来查看当前工作区的状态如下：</p>
-<p><img src="/2023/08/30/git/git_start/start6.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start6.png?raw=true"></p>
 <p>输出表示，没有任何内容可提交，但是出现了未被追踪的文件，应该先通过 <code>git add</code> 将文件追踪。</p>
 <p><strong>添加并提交文件：</strong></p>
-<p><img src="/2023/08/30/git/git_start/start7.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start7.png?raw=true"></p>
 <p><strong>提交结果说明：</strong></p>
 <ol>
 <li><p>第一行: 在名为 <code>master</code> 的分支上，且是该分支的第一个提交( <code>root-commit</code> ) ，提交 <code>ID</code> 为 <code>174d90b</code> ，提交描述为 <code>initialized.</code> 。</p>
@@ -98,13 +98,13 @@
 </ol>
 <p><strong>阶段性总结：<code>.git</code> 所在目录就是工作区的根目录，<code>git</code> 的相关操作要在工作区中才能正常执行，当在工作区的子目录中操作时，会递归查找 <code>.git</code> 目录。</strong></p>
 <p><strong>如果在工作区外操作，会报错：</strong></p>
-<p><img src="/2023/08/30/git/git_start/start8.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start8.png?raw=true"></p>
 <p>可通过 <code>git rev-parse --git-dir</code> 命令来查看 <code>.git</code> 所在的目录 ：</p>
-<p><img src="/2023/08/30/git/git_start/start9.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start9.png?raw=true"></p>
 <p>可通过 <code>git rev-parse --show-toplevel</code> 命令来查看工作区根目录：</p>
-<p><img src="/2023/08/30/git/git_start/start10.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start10.png?raw=true"></p>
 <p>可通过 <code> git clone</code> 命令来备份仓库 ：</p>
-<p><img src="/2023/08/30/git/git_start/start11.png"></p>
+<p><img src="https://github.com/liuhangya/liuhangya.github.io/blob/main/2023/08/30/git/git_start/start11.png?raw=true"></p>
 <p>如上，我们把 <code>demo</code> 备份为了名为 <code>demo-step-1</code> 的文件夹。</p>
 <p><strong>注意：备份时，目录路径为 <code>git_study</code> ，而不是 <code>demo</code> ，是 <code>demo</code> 的上一级 。</strong></p>
 <p><strong>三个不同级别的配置文件：</strong></p>
