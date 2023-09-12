@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    改变历史 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_change_history"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  改变历史
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/09/04/git/git_change_history/" class="article-date">
+  <time datetime="2023-09-04T07:28:25.000Z" itemprop="datePublished">2023-09-04</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>改变历史</p>
+<span id="more"></span>
+
+<p>从现在开始，会通过 <code>sourcetree</code> 软件（可视化 <code>Git</code> 客户端工具）来更好地分析 Git 命令，其中的图谱更是非常的直观地显示了整个提交历史链。</p>
+<p>先查看一下当前的工作区状态：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history1.png" alt="git_change_history1.png"></p>
+<p>由于在上一节，我们使用了归档命令 <code>git archive -o latest.zip Head</code> ，所以这里有一个 <code>latest.zip</code> 未被 <code>Git</code> 追踪。为了让工作区变干净，我们对这个文件进行忽略处理 ： <code>.gitignore</code> 文件中添加一行 <code>*.zip</code> 。</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history2.png" alt="git_change_history2.png"></p>
+<p><strong>场景一：刚提交就后悔了，可能是提交说明写错了或者有文件忘记提交或者有的修改不应该被提交等等，总之就是这一次提交我后悔了，想回退，但是又不想让这一次错误的提交记录出现在历史提交中，那么就可以使用 <code> git commit --amend</code> 命令了。</strong></p>
+<p>开始演示这种单步的后悔场景：</p>
+<ol>
+<li>创建新文件 <code>a.txt</code> 并进行提交。</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history3.png" alt="git_change_history3.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history4.png" alt="git_change_history4.png"></p>
+<ol start="2">
+<li>删除之前创建的 <code>a.txt</code> 文件，再进行提交。</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history5.png" alt="git_change_history5.png"></p>
+<ol start="3">
+<li>后悔了，因为上次的提交说明写错了。</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history6.png" alt="git_change_history6.png"></p>
+<p><strong>总结：这种单步的后悔，主要是通过提交时的 <code>--amend</code> 参数实现，提交的记录会把上次的提交记录覆盖掉了，这正是我们想要的结果。其实原理很简单，内部使用的就是 <code>reset </code> 命令，帮你撤回到上一次提交，只不过 <code>Git</code> 提供了一个更好用更简洁的修补提交命令而已。</strong></p>
+<p><strong>场景二：本地进行了多次的小修改提交，当想要将代码 <code>push</code> 到远程时，不想把本地实验性的小提交都作为提交历史被合并到版本库历史提交链。这时候，就需要多步后悔的操作了。使用 reset 命令，先回退到之前的某个版本，然后再进行提交。</strong></p>
+<p>开始演示这种多步的后悔场景：</p>
+<ol>
+<li>先查看一下当前的提交历史：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history7.png" alt="git_change_history7.png"></p>
+<ol start="2">
+<li>现在把最新的三个提交，合并成一个提交：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history8.png" alt="git_change_history8.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history9.png" alt="git_change_history9.png"></p>
+<ol start="3">
+<li>再查看提交历史：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history10.png" alt="git_change_history10.png"></p>
+<p>原理很简单，通过 <code>reset</code> 回退到指定版本，但是不覆盖工作区和暂存区的内容，再进行内容的提交即可。</p>
+<p><strong>三、对提交历史节点进行丢弃、合并、变基操作。</strong></p>
+<p>接下来的演示比较复杂，涉及到多个新命令的使用，我会提前解释一下新命令的用法，然后再结合我们的项目进行演示巩固。</p>
+<p>为了演示接下来的操作，将再进行 <code>6</code> 次提交，每次提交创建一个文件，文件名为 <code>A、B、C、D、E、F</code> ，最新的提交为 <code>F</code>，为了方便查看，会给对应的提交打上 <code>tag</code> ：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history11.png" alt="git_change_history11.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history12.png" alt="git_change_history12.png"></p>
+<p>上图只展示了 <code>A</code> 的提交，后面几个提交的操作是一样的。接着，对最新的 <code>6</code> 个提交打上 <code>tag</code> ，方便对提交进行标识：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history13.png" alt="git_change_history13.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history14.png" alt="git_change_history14.png"></p>
+<p>现在，所有的准备工作都已经完成了。多个 <code>6</code> 个 打上 <code>tag</code> 的提交，相应的文件也多了 <code>6</code> 个。</p>
+<p>接下来会通过几种不同的方式来实现两种场景。</p>
+<h3 id="实现场景一：-丢弃-D-提交-，即变为-A-B-C-E-F"><a href="#实现场景一：-丢弃-D-提交-，即变为-A-B-C-E-F" class="headerlink" title="实现场景一： 丢弃 D 提交 ，即变为 A-B-C-E-F"></a>实现场景一： 丢弃 D 提交 ，即变为 A-B-C-E-F</h3><p><strong>第一种实现方式：通过 <code>git cherry-pick</code> 命令，配合 <code>checkout</code> 命令实现。</strong></p>
+<p><code>git cherry-pick</code> 命令用于选择一个或多个提交，并将它们应用到当前分支，相当于把这些提交“拣选”过来。会依次应用指定的提交，并创建相应的新提交。该命令需要指定要选择的提交的哈希值或引用。</p>
+<p>命令语法：<code>git cherry-pick &lt;commit1&gt; &lt;commit2&gt; ...</code></p>
+<p>注意：<code>git cherry-pick</code> 可能会引发冲突，特别是当选择的提交与当前分支上的其他更改产生冲突时。在这种情况下，你需要手动解决冲突后执行 <code>git cherry-pick --continue</code> 命令来完成操作。</p>
+<p>具体步骤如下：</p>
+<ol>
+<li><p>将 <code>HEAD</code> 头指针指向提交 <code>C</code> （通过标签 <code>C</code> 来指代具体的提交 <code>ID</code> ）：<code>git checkout C</code></p>
+</li>
+<li><p>通过 <code>cherry-pick</code> 命令，顺序选择 <code>E、F</code> 提交在当前 <code>HEAD</code> 上重放（内容一致，但是提交 <code>ID</code> 会变，是个新提交）：</p>
+</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history15.png" alt="git_change_history15.png"></p>
+<ol start="3">
+<li>通过下图日志可以看出来，提交 <code>ID</code> 变了，但是提交内容不变。<code>AuthorDate</code> 是提交的原始更改时间，而 <code>CommitDate</code> 是进行 <code>cherry-pick</code> 的提交时间。</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history16.png" alt="git_change_history16.png"></p>
+<ol start="4">
+<li>最后，需要将头指针切换回 <code>master</code> ，并且将 <code>master</code> 分支重置到最新的提交 ID （<code>557585c</code>）上，这里通过 <code>reflog</code> 的语法，即 <code>HEAD@&#123;1&#125;</code> 表示 <code>master</code> 分支最新提交，不清楚 <code>HEAD@&#123;1&#125;</code> 指代哪个提交，可以通过 <code>git reflog</code>  来查看：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history17.png" alt="git_change_history17.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history18.png" alt="git_change_history18.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history19.png" alt="git_change_history19.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history20.png" alt="git_change_history20.png"></p>
+<p>通过图谱可清晰看到，之前提交的 <code>D、E、F</code> 提交在分叉提交上，而在 <code>master</code> 分支上重新提交了 <code>E、F</code>，全新的提交 <code>ID</code> 。</p>
+<p><strong>注意：E 和 F 是全新的提交，没有 tag ，之前的 tag 还在原来的提交上，甚至可以通过原来的 tag 来重置状态。</strong></p>
+<p>阶段性总结：上述操作说明了分支不是固定的，每个分叉提交都可以做为分支来使用，图谱中的红色分叉原本就是 <code>master</code> 分支，现在 <code>master</code> 分支变为蓝色分叉了，主要还是看分支引用记录的提交 <code>ID</code> 。</p>
+<p><strong>第二种实现方式： 通过 <code>git rebase</code> 命令实现。</strong></p>
+<p>命令语法： <code>git rebase --onto [newbase] [since] [till]</code> </p>
+<p>作用：对提交执行变基操作，可以实现将指定范围的提交 “嫁接” 到另一个提交之上。</p>
+<p>变基的详细过程：</p>
+<ol>
+<li><p>首先会执行 <code>git checkout</code> 切换到 <code>till</code>。如果 <code>till</code> 指向的不是一个分支（如 <code>master</code>），则变基操作是在 <code>detached HEAD</code>（分离头指针）状态进行的，当变基结束后，需要对 <code>master</code> 分支执行重置以实现变基结果在分支中生效。(场景一实现效果的最后一步操作)</p>
+</li>
+<li><p>将 <code>since .. till</code> 所标识的提交范围写到一个临时文件中。<code>since .. till</code> 指的是 <code>since</code> 到 <code>till</code> 之间的历史记录，包含 <code>till</code> ，但是不包含 <code>since</code> ，即前面是开区间，后面是闭区间。</p>
+</li>
+<li><p>将当前分支强制重置到 <code>newbase</code> ，相当于执行 ：<code>git reset --hard newbase</code> 。</p>
+</li>
+<li><p>从保存在临时文件中的提交列表中，将提交逐一按顺序重新提交到重置之后的分支上。如果遇到提交已经在分支中包含，则跳过该提交。</p>
+</li>
+<li><p>如果在提交中遇到冲突，则变基过程暂停。用户解决冲突后执行 <code>git rebase --continue</code> 继续变基操作。或者执行 <code>git rebase --skip</code> 跳过此提交。或者执行 <code>git rebase --abort</code> 就此终止变基操作回到变基前的分支上。</p>
+</li>
+</ol>
+<p>具体步骤如下：</p>
+<ol>
+<li>首先，通过原来的 tag 重置回到提交 F 上，即回到准备场景的时机：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history21.png" alt="git_change_history21.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history31.png" alt="git_change_history31.png"></p>
+<ol start="2">
+<li>执行变基操作：<code>git rebase --onto C D F</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history32.png" alt="git_change_history32.png"></p>
+<p><code>C</code> 就是语法中的 <code>newbase</code> ，<code>D</code> 是 <code>since</code> , <code>F</code> 是 <code>till</code> 。<code>A、B、C</code> 是分支中已经存在的提交，所以会跳过这些提交，<code>E、F</code> 在 <code>C</code> 的提交基础上重新提交了，生成了两个新的提交（内容是原来的 <code>E、F</code>，但是提交 <code>ID</code> 变化了，属于新提交）。类似批量执行了 <code>cherry-pick</code> 。现在 <code>HEAD</code> 指向最新的提交，并不指向 <code>master</code> ， <code>master</code> 记录的还是原来的 <code>tag</code> 是 <code>F</code> 的提交。</p>
+<ol start="3">
+<li>将 <code>master</code> 分支指向变基后的新提交上。<br>  <code>git checkout master</code> ：把分离头指针状态变回 master 引用。<br>  <code>git reset --hard HEAD@&#123;1&#125;</code> ：把 master 记录的提交 ID 重置为变基后的新提交。</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history20.png" alt="git_change_history20.png"></p>
+<p><strong>明确一下：现在的 <code>master</code> 分支是 <code>A-B-C-E-F</code> 。这里的 <code>E</code> 和 <code>F</code> 不是原来的 <code>E</code> 和 <code>F</code> ，只是提交内容是一致的。上述图谱中的红色的打上标签的 <code>E</code> 和 <code>F</code> 才是原来的提交(并不是直接拿掉 <code>D</code> 提交，其他的都保持一样的提交)。</strong></p>
+<p><strong>第三种实现方式： 通过 <code>git rebase -i</code> 交互式命令实现。</strong></p>
+<p>交互式变基操作：会将 <code>since .. till</code> 的提交全部列在一个文件中，然后自动打开一个编辑器来编辑这个文件。可以通过修改文件的内容设定变基操作，实现删除提交、将多个提交压缩为一个提交、更改提交顺序以及更改历史提交的提交说明等。</p>
+<p>下图为变基时打开的文件（<code>git rebase -i C</code>）：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history36.png" alt="git_change_history36.png"></p>
+<p>从该文件可以看出：</p>
+<ul>
+<li>会先列出 <code>since</code> 到 <code>till</code> 的提交，不包含 <code>since</code> ,所以只列出了 <code>D、E、F</code> 。</li>
+<li>每个提交前面会有一个动作命令，现在是 <code>pick</code> ，即应用此提交。</li>
+</ul>
+<p>简单分析一下每个动作命令的含义：</p>
+<p><strong>pick</strong> : 简写为 <code>p</code> ，表示应用此提交。</p>
+<p><strong>reword</strong> ：简写为 <code>r</code> ，表示应用此提交，但是会暂停 <code>rebase</code> 的进程，并提供了一个修改提交信息的机会。对于修改历史提交的提交说明非常方便。</p>
+<p><strong>edit</strong> ：简写为 <code>e</code>，表示应用此提交，但是会暂停 <code>rebase</code> 的进程，可以编辑提交内容。提交后，还需要执行 <code>git rebase continue</code> 命令继续变基操作。用户在变基暂停状态下可以执行多次提交，从而实现把一个提交分解为多个提交。</p>
+<p><strong>squash</strong> ：简写为 <code>s</code> ，该提交会与前面的提交合并为一个提交。</p>
+<p><strong>fixup</strong> ：简写为 <code>f</code> ，该提交会与前面的提交合并为一个提交，但是当前提交说明会被丢弃。</p>
+<p><strong>drop</strong> ：简写为 <code>d</code> ，丢弃当前提交。</p>
+<p>开始具体实现步骤：</p>
+<ol>
+<li>首先，通过原来的 <code>tag</code> 重置回到提交 <code>F</code> 上，即回到准备场景的时机：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history21.png" alt="git_change_history21.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history31.png" alt="git_change_history31.png"></p>
+<ol start="2">
+<li>执行交互式变基操作：<code>git rebase -i C</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history36.png" alt="git_change_history36.png"></p>
+<p>按 <code>i</code> 进入编辑模式，然后把 D 那行删除掉就行了，如下显示：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history37.png" alt="git_change_history37.png"></p>
+<p>按下 <code>esc</code> 退出编辑模式。再通过 <code>:wq</code> ，保存并退出，就完成了，效果跟其他实现方式一致。</p>
+<h3 id="实现场景二：-将-C-和-D-合并，变成一个提交，即-A-B-CD-E-F"><a href="#实现场景二：-将-C-和-D-合并，变成一个提交，即-A-B-CD-E-F" class="headerlink" title="实现场景二： 将 C 和 D 合并，变成一个提交，即 A-B-CD-E-F"></a>实现场景二： 将 C 和 D 合并，变成一个提交，即 A-B-CD-E-F</h3><p><strong>第一种实现方式：通过 <code>git cherry-pick</code> 命令，配合 <code>checkout</code> 命令实现。</strong></p>
+<p>具体步骤如下：</p>
+<ol>
+<li>首先，通过原来的 tag 重置回到提交 F 上，即回到准备场景的时机：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history21.png" alt="git_change_history21.png"></p>
+<ol start="2">
+<li>将 <code>HEAD</code> 指针指向 <code>D</code> 提交，然后回退两次，将指针指向 <code>B</code> 提交，以便待会将 <code>C</code> 和 <code>D</code> 合并：<br><code>git checkout  D</code><br><code>git reset --soft HEAD^^</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history22.png" alt="git_change_history22.png"></p>
+<p>注意看： <code>master</code> 记录的还是最新的提交。但是 <code>HEAD</code> 指向了 <code>B</code> 。回顾之前我们讲述 <code>reset</code> 命令时，<code>reset</code> 会改变 <code>master</code> 记录的提交 <code>ID</code> ，其实跟这里的表现并没有冲突。因为当时的 <code>HEAD</code> 默认指向的是 <code>master</code> ，即 <code>HEAD</code> 就是 <code>master</code> ，所以 <code>master</code> 记得的提交 <code>ID</code> 才会跟着变化 。而在这里的 <code>HEAD</code> 是处于分离头指针状态，指向的是 <code>D</code> ，那么回退到 <code>B</code> 时， <code>HEAD</code> 指向的是 <code>B</code> ，但是 <code>master</code> 并不会有任何改变。</p>
+<p>如图所示，红色是当前 <code>HEAD</code> 及历史提交，当前 <code>HEAD</code> 指向提交 <code>B</code>。因为是 通过 <code>--soft</code> 模式从 <code>D</code> 回退到 <code>B</code> 的，所以当前的工作区和暂存区的内容为 <code>C</code> 和 <code>D</code> 的提交内容（可以理解为 <code>C</code> 和 <code>D</code> 的内容从提交中撤回了）。</p>
+<ol>
+<li>将当前的 <code>C</code> 和 <code>D</code> 的内容进行提交，通过 <code>-C</code> 参数，重新使用之前提交过的 <code>C</code> 的提交信息进行提交，这次提交是新的提交，会生成新的提交 <code>ID</code> ，只是提交描述为之前 <code>C</code> 的描述 ：<code>git commit -C C</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history23.png" alt="git_change_history23.png"></p>
+<ol start="4">
+<li>上一步已经将 <code>C</code> 和 <code>D</code> 的提交内容合并了(通过一个新的提交来体现)。现在，我们通过 <code>cherry-pick</code> 命令，将 <code>E 、F</code> 在当前 <code>HEAD</code> 上进行重放即可：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history24.png" alt="git_change_history24.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history25.png" alt="git_change_history25.png"></p>
+<ol start="5">
+<li>我们先检出 <code>master</code> ，看看现在是怎样：<code>git checkout master</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history26.png" alt="git_change_history26.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history27.png" alt="git_change_history27.png"></p>
+<p>对比上一次的图谱，<code>master</code> 从红色的 <code>F</code> 变成了蓝色的 <code>F</code> ，现在指向的最新的提交是之前的 <code>95a86cf</code> ，而不是我们想要的 <code>HEAD@&#123;1&#125;</code> 这个提交。</p>
+<ol start="6">
+<li>最后，我们将当前 <code>HEAD</code> 的指向变为 <code>HEAD@&#123;1&#125;</code> :</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history28.png" alt="git_change_history28.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history29.png" alt="git_change_history29.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history30.png" alt="git_change_history30.png"></p>
+<p>目的达成，现在变成 <code>5</code> 个提交了，第三个提交虽然描述为 <code>create C.txt</code> ，实际内容是 <code>create C.txt</code> 和 <code>create D.txt</code> 的融合。</p>
+<p><strong>第二种实现方式： 通过 <code>git rebase</code> 命令实现。</strong></p>
+<ol>
+<li>前面的 3 步都跟实现方式一（通过 <code>cherry-pick</code> 方式实现）是一样的 ，现在开始不一样的第 4 步：</li>
+</ol>
+<ul>
+<li>先记录现在最新的提交，这个提交将作为 <code>newbase</code> (新的基点)，我们通过 <code>tag</code> 的方式来更好地记录这个提交 <code>ID</code> 。</li>
+</ul>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history34.png" alt="git_change_history34.png"></p>
+<ul>
+<li>开始执行变基操作：<code>git rebase --onto newbase D master</code></li>
+</ul>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history30.png" alt="git_change_history30.png"></p>
+<p>上述图谱显示已经没有 <code>newbase</code> 标签了，之前为了方便打了 <code>newbase</code> 标识，现在没用了，已经删除了：<code>git tag -d newbase</code></p>
+<p>仔细观察： 当前的 <code>HEAD</code> 已经回到 <code>master</code>，而且 <code>master</code> 记录的最新的提交也是新的提交，而不在原来的 <code>F</code> 上了。这是因为我们这一次没有用参数 <code>F</code> ，而是用的 <code>master</code> 分支引用，使得变基操作自动处理了引用问题，无需手动将 <code>master</code> 分支指向变基后的新提交上(少了第一种实现方式的 5 和 6 步骤)。 </p>
+<p>再次确认是否引用自动处理了：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history35.png" alt="git_change_history35.png"></p>
+<p><strong>第三种实现方式： 通过 <code>git rebase -i</code> 交互式命令实现。</strong></p>
+<ol>
+<li>首先，通过原来的 tag 重置回到提交 F 上，即回到准备场景的时机：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history21.png" alt="git_change_history21.png"></p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history31.png" alt="git_change_history31.png"></p>
+<ol start="2">
+<li>执行交互式变基操作：<code>git rebase -i B</code></li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history38.png" alt="git_change_history38.png"></p>
+<p>修改第二行，将 <code>pick</code> 修改为 <code>s</code> （<code>squash</code>的简写）:</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history39.png" alt="git_change_history39.png"></p>
+<p>保存退出之后 ，会自动开始变基操作，在执行到 <code>s</code> 命令设定的提交时，会进入提交前的日志编辑状态，如下图：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history40.png" alt="git_change_history40.png"></p>
+<p>输出说明已经很清晰了，C 和 D 的提交说明显示在一起，接下来准备执行的动作命令为 E 和 F，我们不修改提交说明，直接保存退出就完成了，效果跟其他实现方式一致。</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history30.png" alt="git_change_history30.png"></p>
+<hr>
+<h3 id="接下来，开始一个新的话题"><a href="#接下来，开始一个新的话题" class="headerlink" title="接下来，开始一个新的话题"></a>接下来，开始一个新的话题</h3><p><strong>一、丢弃历史</strong></p>
+<p>使用场景：一些非常早的历史提交不希望或者没有必要再继续保留，对历史记录进行精简之后再与他人共享。或者不希望太多的历史版本而导致磁盘空间占用。</p>
+<p>现在，我们对学习的版本库进行精简，先看一下当前的提交历史：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history41.png" alt="git_change_history41.png"></p>
+<p>我们希望把 <code>tag A</code> 之前的历史提交全部清除掉，可以这样操作：<br>基于 <code>tag A</code> 对应的提交构造一个根提交（即没有父提交的提交），然后再将 <code>master</code> 分支在 <code>tag A</code> 之后的提交变基到新的根提交上。</p>
+<p>对于根提交的构造，可以使用 <code>git commit-tree</code> 命令实现，具体操作如下：</p>
+<ol>
+<li>查看一下 <code>tag A</code> 指向的目录树</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history42.png" alt="git_change_history42.png"></p>
+<ol start="2">
+<li>使用 <code>git commit-tree</code> 命令直接从该目录树创建提交，可用 <code>A^&#123;tree&#125;</code> 指向该目录树：</li>
+</ol>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history43.png" alt="git_change_history43.png"></p>
+<p>上图可知，确实为根提交，因为这个提交没有 <code>parent</code> 。</p>
+<ol start="3">
+<li>根提交 <code>ID</code> 是 <code>520a0b9a</code> ，开始执行变基：</li>
+</ol>
+<p><code>git rebase --onto 520a0b9a  A master</code></p>
+<p>现在应该熟练了吧，将 <code>A</code> 到<code> master</code> 最新的提交列表（不包含 <code>A</code>）， 在新的基点 <code>520a0b9a</code> 上进行重放。</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history44.png" alt="git_change_history44.png"></p>
+<p>可以看到，历史记录精简了。</p>
+<p><strong>二、反转提交</strong></p>
+<p>使用场景：命令 <code>git revert</code> ，用于反转提交，该命令可以指定反转一个或多次提交的更改。</p>
+<p>注意：是反转指定提交引入的修改，而不是删除该提交，这意味着之前的提交还存在，在历史记录中还保留着。</p>
+<p>举例：我添加了一个文件 <code>A</code> 并进行提交 ，然后通过 <code>git revert</code> 命令进行一个反转提交，这个提交将删除文件 <code>A</code> ，即对指定的提交内容进行反转。最终会有两个提交记录，一个是添加文件 <code>A</code> 的提交，另一个是移除文件 <code>A</code> 的提交。</p>
+<p>接下来，我们在当前练习项目中进行演示：</p>
+<p>我们知道，现在最新的提交是 <code>F</code> ，创建了 <code>F.txt</code> 文件。现在对这个提交进行撤回，不是 <code>reset</code> 回到上一次提交，而是反转再提交一次：<code>git revert HEAD </code></p>
+<p>执行命令之后，会在编辑状态下暂停，显示如下：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history45.png" alt="git_change_history45.png"></p>
+<p>可以在编辑器中修改提交说明，保存退出即可。</p>
+<p>再查看一下提交历史看看：</p>
+<p><img src="/2023/09/04/git/git_change_history/git_change_history46.png" alt="git_change_history46.png"></p>
+<p>可以看到，增加了一个提交，当前的 <code>F.txt</code> 已经不存在了。</p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/09/04/git/git_change_history/"
+      data-id="clmfp4rrz000ds8b9ama7bqwj"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  
+  <a href="/2023/08/31/git/git_base/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 基本操作</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
