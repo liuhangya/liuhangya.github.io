@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    团队协作_冲突解决 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/local_teamwork2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  团队协作_冲突解决
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/09/20/git/local_teamwork2/" class="article-date">
+  <time datetime="2023-09-20T03:38:46.000Z" itemprop="datePublished">2023-09-20</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>团队协作_冲突解决</p>
+<span id="more"></span>
+
+<p>在上一节，通过执行 <code>git pull</code> 成功合并后再推送来解决非快进式推送的问题。但在真实的项目环境中，不总是会一帆风顺的，只要有合并就可能出现冲突，这一节重点介绍冲突解决方式。</p>
+<p>上节已经说过： <code>git pull = git fetch + git merge</code></p>
+<ul>
+<li><p><code>git fetch</code> ：可暂时理解为将远程的版本库的对象（提交、里程碑、分支等）复制到本地。在本地版本库有专门的远程仓库映射引用，如：<code>.git\refs\remotes\origin\master</code> 。</p>
+</li>
+<li><p><code>git merge</code> ：会被隐式地执行，将其他版本库的提交和本地版本库的提交进行合并。该命令还可以对本版本库的其他分支进行显示的合并操作。默认情况下，<strong>合并后的结果会自动提交</strong>，如果提供 <code>--no-commit</code> 选项，则合并后的结果会放入暂存区，用户可以对合并结果进行检查、更改，然后手动提交。</p>
+</li>
+</ul>
+<p>合并操作并非总会成功，因为合并的不同提交可能同时修改了同一文件相同区域的内容，这会导致冲突。冲突会造成合并操作的中断，冲突的文件会被标识，用户可以对标识为冲突的文件进行冲突解决操作，然后更新暂存区，再提交，最终完成合并操作。</p>
+<h3 id="场景一、成功自动合并"><a href="#场景一、成功自动合并" class="headerlink" title="场景一、成功自动合并"></a>场景一、成功自动合并</h3><p>大多数情况下，<code>Git</code> 都能非常智能地进行自动合并，下面演示一下成功自动合并的三种情况。</p>
+<p><strong>情况一：修改不同的文件</strong></p>
+<p>还是用上一节的例子进行演示，为了确保版本库状态的一致性，分别在 <code>user1</code> 和 <code>user2</code> 的本地版本库中执行下面的操作：</p>
+<p><code>git fetch</code><br><code>git reset --hard origin/master</code></p>
+<p>现在两个用户的本地版本都为远程版本库的最新版本，状态一致。都有 <code>team</code> 目录和 <code>user1.txt</code> 和 <code>user2.txt</code> 文件。</p>
+<ol>
+<li>用户 <code>user1</code> 修改 <code>user1.txt</code> 文件，提交并推送到远程。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local19.png" alt="local19.png"></p>
+<ol start="2">
+<li>用户 <code>user2</code> 修改 <code>user2.txt</code> 文件，提交并推送（推送会失败，遇到非快进式推送的错误）。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local20.png" alt="local20.png"></p>
+<ol start="3">
+<li>用户 <code>user2</code> 执行 <code>git fetch</code> 操作，获取提交并更新到本地用于跟踪远程版本库 <code>master</code> 分支的本地引用 <code>origin/master</code> 中。再执行 <code>git merge</code> 操作，成功自动合并，最后推送合并后的本地版本库到远程版本库。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local21.png" alt="local21.png"></p>
+<ol start="4">
+<li>查看提交关系图。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local22.png" alt="local22.png"></p>
+<p><strong>情况二：修改相同文件的不同区域</strong></p>
+<p>当用户 <code>user1</code> 和 <code>user2</code> 在本地提交中修改相同的文件，但修改的是文件的不同位置时，仍可成功自动合并，具体操作如下：</p>
+<ol>
+<li><p>为了确保版本库状态的一致性，分别在 <code>user1</code> 和 <code>user2</code> 的本地版本库中执行 <code>git pull</code> 操作。</p>
+</li>
+<li><p>用户 <code>user1</code> 修改 <code>README</code> 文件，在第一行插入内容，更改后内容如下：</p>
+<p> User1 hacked.<br> Hello.</p>
+</li>
+<li><p>用户 <code>user1</code> 本地提交并推送：</p>
+</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local23.png" alt="local23.png"></p>
+<ol start="4">
+<li><p>用户 <code>user2</code> 也在自己的工作区中修改 <code>README</code> 文件，在文件的最后插入内容，更改后的文件内容如下：</p>
+<p> Hello.<br> User2 hacked.</p>
+</li>
+<li><p>用户 <code>user2</code> 对修改进行本地提交，并执行 <code>git fetch</code> 操作：</p>
+</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local24.png" alt="local24.png"></p>
+<ol start="6">
+<li>用户 <code>user2</code> 进行合并操作，完成自动合并并进行推送。这里合并的时候写的是 <code>refs/remotes/origin/master</code> ，其简写就是： <code>origin/master</code></li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local25.png" alt="local25.png"></p>
+<ol start="7">
+<li>追溯一下 <code>README</code> 文件每一行的来源，可以看到 <code>user1</code> 和 <code>user2</code> 更改的位置：</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local26.png" alt="local26.png"></p>
+<p><strong>情况三：同时更改文件名和文件内容</strong></p>
+<p>如果用户将文件移动到其他目录（或修改文件名），另外一个用户使用旧的文件进行了修改，<code>Git</code> 还是可以成功自动合并，具体操作如下：</p>
+<ol>
+<li><p>为了确保版本库状态的一致性，分别在 <code>user1</code> 和 <code>user2</code> 的本地版本库中执行 <code>git pull</code> 操作。</p>
+</li>
+<li><p>用户 <code>user1</code> 将 <code>README</code> 移动到 <code>doc</code> 目录下，进行本地提交并推送：</p>
+</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local27.png" alt="local27.png"></p>
+<ol start="3">
+<li>用户 <code>user2</code> 在本地修改 <code>REAMD</code> 文件，在文件的最后插入内容，并本地提交。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local28.png" alt="local28.png"></p>
+<ol>
+<li>用户 <code>user2</code> 执行<code> git fetch</code> 操作，并执行 <code>git merge</code> 合并操作，最后进行推送。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local29.png" alt="local29.png"></p>
+<ol start="5">
+<li>查看日志，并使用 <code>-m</code> 参数查看合并操作所做出的修改。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local30.png" alt="local30.png"></p>
+<p>可以看到，上面的提交是 <code>user1</code> 的，进行了文件的移动。下面的提交是 <code>user2</code> 的，<code> doc/README | 2 +-</code> 表示这个文件从第二行开始，添加了一行并删除了一行 。原来的第三行内容是：<code>User2 hacked.</code> ，而现在的第三行内容是：<code>User2 hacked.User2 hacked again. </code>。Git&#96; 理解为删除了原来的行，新增了一行。</p>
+<h3 id="场景二、自动合并失败，手动冲突解决"><a href="#场景二、自动合并失败，手动冲突解决" class="headerlink" title="场景二、自动合并失败，手动冲突解决"></a>场景二、自动合并失败，手动冲突解决</h3><p>如果不同用户修改了同一文件的同一区域，则在合并时会遇到冲突而中断，因为 <code>Git</code> 无法替用户做出决定（是要 <code>user1</code> 的提交内容还是 <code>user2</code> 的提交内容 ，还是两者提交的所有内容），会把决定权交给用户，用户再根据 <code>Git</code> 标识出的冲突位置来进行手动处理。</p>
+<p>演示这个场景很简单，两个用户都修改 <code>doc/READE</code> 文件，都在第二行 <code>Hello</code>. 的后面加上自己的名字，具体操作过程如下：</p>
+<ol>
+<li><p>老规则，为了确保版本库状态的一致性，分别在 <code>user1</code> 和 <code>user2</code> 的本地版本库中执行 <code>git pull</code> 操作。</p>
+</li>
+<li><p>用户 <code>user1</code> 在第二行 <code>Hello.</code> 的后面加上自己的名字，内容如下：</p>
+<p> User1 hacked.<br> Hello. user1.<br> User2 hacked.User2 hacked again.</p>
+</li>
+<li><p>用户 <code>user1</code> 进行本地提交并推送：</p>
+<p>git add -u<br>git commit -m “say hello to user1.”<br>git push</p>
+</li>
+<li><p>用户 <code>user2</code> 在第二行<code> Hello.</code> 的后面加上自己的名字，内容如下：</p>
+<p> User1 hacked.<br> Hello. user2.<br> User2 hacked.User2 hacked again.</p>
+</li>
+<li><p>用户 <code>user2</code> 对修改进行本地提交：</p>
+<p> git add -u<br> git commit -m “say hello to user2.”</p>
+</li>
+<li><p>用户 <code>user2</code> 执行 <code>git pull</code> 操作（相当于<code>git fetch</code> 和 <code>git merge</code>）：</p>
+</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local31.png" alt="local31.png"></p>
+<p>自动合并失败了，需要手动修复冲突然后再对结果进行提交。</p>
+<ol start="7">
+<li>通过 <code>git status</code> 命令，可以从状态输出中看到文件 <code>doc/README.txt</code> 处于冲突状态，这个文件在两个不同的提交中都做了修改：</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local32.png" alt="local32.png"></p>
+<p>输出提示可以使用 <code>git merge --abort</code>  终止合并操作，或者手动修复冲突然后再对结果进行 <code>commit</code> 。</p>
+<p>实际上，合并过程是通过 <code>.git</code> 目录下的几个文件进行记录的，当合并成功时，文件会自动被删除，现在合并失败，所以本地还存在这些文件：</p>
+<ul>
+<li><p><code>.git/MERGE_HEAD</code> ：记录所合并的提交 ID（就是合并成功后的新提交节点）。</p>
+</li>
+<li><p><code>.git/MERGE_MSG</code> ：记录合并失败的信息。</p>
+</li>
+<li><p><code>.git/MERGE_MODE</code>：标识合并状态。</p>
+</li>
+</ul>
+<p><img src="/2023/09/20/git/local_teamwork2/local33.png" alt="local33.png"></p>
+<p>而且暂存区中还会记录冲突文件的多个不同版本，可以使用 <code>git ls-files -s</code> 命令查看：</p>
+<p><img src="/2023/09/20/git/local_teamwork2/local34.png" alt="local34.png"></p>
+<p>输出中的每一行有四个字段，第一个是文件的属性，第二个是哈希值，第三个是暂存区编号，当合并冲突发生时，会用到 0 以上的暂存区编号。</p>
+<ul>
+<li><p>编号 1 的暂存区用于保存冲突文件修改之前的副本，也就是冲突双方共同的祖先版本。</p>
+</li>
+<li><p>编号 2 的暂存区用于保存当前冲突文件修改的副本。</p>
+</li>
+<li><p>编号 3 的暂存区用于保存合并分支的修改的副本。</p>
+</li>
+</ul>
+<p>可通过 <code>:n:&#123;filename&#125;</code> 语法来访问对应副本的内容，也可以用我们之前学过的 <code>git cat-file -p &#123;commit&#125;</code> 来查看副本的内容：</p>
+<p><img src="/2023/09/20/git/local_teamwork2/local35.png" alt="local35.png"></p>
+<p>通过 <code>:n:&#123;filename&#125;</code> 的方式是这样的：<code>git show :1:doc/README</code> 。对暂存区中冲突文件的上述三个副本无须了解太多，这三个副本实际上是提供给冲突解决工具，用于实现三向文件合并的。</p>
+<p>工作区的版本则可能同时包含了成功的合并及冲突的合并，其中冲突的合并会用特殊的标记（&lt;&lt;&lt;&lt;&lt;&lt;&lt;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&gt;&gt;&gt;&gt;&gt;&gt;&gt;）进行标识。当前冲突的文件内容如下：</p>
+<p><img src="/2023/09/20/git/local_teamwork2/local36.png" alt="local36.png"></p>
+<p>特殊标记 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> 和 <code>=======</code> 之间的内容是当前分支所更改的内容 。 <code>========</code> 和 <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> 之间的内容是所合并的分支修改的内容。</p>
+<p><strong>冲突解决的本质：就是通过编辑操作，将冲突标识符所标识的冲突内容替换为合适的内容，并去掉冲突标识符。编辑完毕后执行 add add 命令将文件添加到暂存区（编号0），然后再提交，就完成了冲突解决。</strong></p>
+<p>现在，工作区处于合并冲突状态，是无法再执行提交操作的。此时有两个选择：放弃合并操作或者解决冲突。放弃合并很简单，可以使用 <code>git merge --abort</code>  终止合并或执行 <code>git reset</code> 将暂存区重置即可。下面重点介绍如何进行冲突解决，也有两个方法：一个是对少量冲突非常适合的手工编辑操作，另一个是使用图形化冲突解决工具。</p>
+<p><strong>冲突解决方式一：手工编辑完成冲突解决</strong></p>
+<p>很简单，直接将 <code>README</code> 文件的标识符去掉，并修改为想要的提交内容，再进行提交。</p>
+<p>修改后的文件内容如下：</p>
+<pre><code>User1 hacked.
+Hello. user1. and user2.
+User2 hacked.User2 hacked again.
+</code></pre>
+<p>添加到暂存区并提交：</p>
+<p><code>git add -u </code><br><code>git commit -m &quot;Merge completed:say hello to all users.&quot;</code></p>
+<p>查看最近三次的提交日志，会看到最新的提交就是一个合并提交。提交完成后，会看到 <code>.git</code> 目录下与合并相关的文件 <code>.git/MERGE_HEAD</code>、<code>.git/MERGE_MSG</code>、<code>.git/MERGE_MODE</code> 文件都自动删除了，而且暂存区中的三个副本也都清除了（实际在对编辑完的冲突文件执行 <code>git add</code> 后就已经被清除了）。</p>
+<p><img src="/2023/09/20/git/local_teamwork2/local37.png" alt="local37.png"></p>
+<p><strong>冲突解决方式二：图形工具完成冲突解决</strong></p>
+<ol>
+<li>由于已经手动完成了冲突解决，只能先回滚提交，再执行合并重新进入冲突状态。</li>
+</ol>
+<p><img src="/2023/09/20/git/local_teamwork2/local38.png" alt="local38.png"></p>
+<ol start="2">
+<li><p>再次合并操作，进入冲突状态：<code>git merge origin/master</code></p>
+</li>
+<li><p>开始使用图形工具，根据不同的冲突解决软件来做具体操作，最终结果跟手动处理的一致。</p>
+</li>
+<li><p>最后进行 <code>git push</code> 操作。</p>
+</li>
+</ol>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/09/20/git/local_teamwork2/"
+      data-id="clmssmq4w0000q0b9e4b0ap1d"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  
+  <a href="/2023/09/18/git/local_teamwork/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">团队协作_快进式推送</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

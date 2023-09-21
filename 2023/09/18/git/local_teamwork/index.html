@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    团队协作_快进式推送 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/local_teamwork"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  团队协作_快进式推送
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/09/18/git/local_teamwork/" class="article-date">
+  <time datetime="2023-09-18T07:59:01.000Z" itemprop="datePublished">2023-09-18</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>团队协作_快进式推送</p>
+<span id="more"></span>
+
+<p><code>Git</code> 作为版本控制系统，其主要功能就是团队协作，成员之间必然就存在着数据交换，而数据交换需要协议，<code>Git</code> 支持的协议包括：<code>SSH、GIT、HTTP、HTTPS</code> 等。</p>
+<p>在本篇，我们将模拟一个公共版本库（想象为远程服务器），多个不同的用户工作环境（想象为在不同的主机上，由不同的用户进行操作）。</p>
+<p>下面正式演示一个共享版本库的搭建以及两个用户 <code>user1</code> 和 <code>user2</code> 在各自的工作区是如何工作并进行数据交换的，具体过程如下：</p>
+<ol>
+<li><code>在 E:\git_study\repos/</code> 中创建一个共享的版本库 <code>shared.git</code>，以裸版本库方式创建：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local1.png" alt="local1.png"></p>
+<ol start="2">
+<li>用户 <code>user1</code> 克隆版本库到上一级目录的 <code>user1/workspace</code> 目录中 ：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local2.png" alt="local2.png"></p>
+<p>这里通过本地协议 <code>file://</code> 的方式来克隆，克隆一个刚初始化完成的裸版本库会显示警告，警告正在克隆的版本库是一个空的版本库。</p>
+<p>注意：本地协议 <code>file://</code> 后面的路径为<strong>绝对路径</strong>，不能用相对路径，否则会报错。</p>
+<ol start="3">
+<li>设置 <code>user.name</code> 和 <code>user.email</code> 配置变量</li>
+</ol>
+<p>配置的是版本库级别的，所以不要加上 <code>--global</code> 或 <code>--system</code> 参数，和全局设置区分开来，所有用户共用全局配置，就无法模拟了。</p>
+<p><img src="/2023/09/18/git/local_teamwork/local3.png" alt="local3.png"></p>
+<p><img src="/2023/09/18/git/local_teamwork/local4.png" alt="local4.png"></p>
+<ol start="4">
+<li>用户 <code>user1</code> 创建初始数据并提交，这里新建了文件 <code>README</code> 并输入内容 <code>Hello.</code> 。</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local5.png" alt="local5.png"></p>
+<p><img src="/2023/09/18/git/local_teamwork/local6.png" alt="local6.png"></p>
+<ol start="5">
+<li>用户 <code>user1</code> 将本地版本库的提交推送到远程版本库：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local7.png" alt="local7.png"></p>
+<p>上述命令中使用了别名 <code>origin</code> ，其实际指向的就是 <code>file:///e/git_study/repos/shared.git</code> 这个远程版本库，可通过配置文件查看：</p>
+<p><img src="/2023/09/18/git/local_teamwork/local4.png" alt="local4.png"></p>
+<ol start="6">
+<li>用户 <code>user2</code> 也克隆远程版本库并设置 <code>name</code> 和 <code>email</code> ：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local8.png" alt="local8.png"></p>
+<p>可以看到，用户 <code>user2</code> 的本地版本库和用户 <code>user1</code> 有同样的提交。证明 <code>user1</code> 已成功推送到远程， <code>user2</code> 也成功从远程获取到数据。</p>
+<h4 id="现在，两个用户的工作区是相同的，如果两人各自在本地版本库中进行独立的提交，然后再分别向远程版本库推送，会怎样？是互相覆盖还是提交失败呢？我们来模拟一下这个场景吧。"><a href="#现在，两个用户的工作区是相同的，如果两人各自在本地版本库中进行独立的提交，然后再分别向远程版本库推送，会怎样？是互相覆盖还是提交失败呢？我们来模拟一下这个场景吧。" class="headerlink" title="现在，两个用户的工作区是相同的，如果两人各自在本地版本库中进行独立的提交，然后再分别向远程版本库推送，会怎样？是互相覆盖还是提交失败呢？我们来模拟一下这个场景吧。"></a>现在，两个用户的工作区是相同的，如果两人各自在本地版本库中进行独立的提交，然后再分别向远程版本库推送，会怎样？是互相覆盖还是提交失败呢？我们来模拟一下这个场景吧。</h4><ol>
+<li>用户 <code>user1</code> 先在本地提交，然后推送到远程版本库：</li>
+</ol>
+<p>创建对应目录和文件 <code>team/user1.txt</code> ，在 <code>user1.txt</code> 中输入文本，进行提交和推送，如下图：</p>
+<p><img src="/2023/09/18/git/local_teamwork/local9.png" alt="local9.png"></p>
+<p><img src="/2023/09/18/git/local_teamwork/local10.png" alt="local10.png"></p>
+<p>可以看到，用户 <code>user1</code> 成功推送到远程版本库，也就是说远程版本库比用户 <code>user2</code> 领先一个提交，如果 <code>user2</code> 仍基于旧数据而对本地进行改动，然后向远程版本库推送，会有什么结果呢？</p>
+<ol start="2">
+<li>用户 <code>user2</code> 创建对应目录和文件 <code>team/user2.txt</code> ，在 <code>user2.txt</code> 中输入文本，进行提交：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local11.png" alt="local11.png"></p>
+<ol start="3">
+<li>用户 <code>user2</code> 进行推送：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local12.png" alt="local12.png"></p>
+<p><strong>推送失败。一般情况下，推送只允许 “快进式” 推送，就是要推送的本地版本库的提交是建立在远程版本库相应分支的现有提交基础上的，即远程版本库相应分支的最新提交是本地版本库最新提交的祖先提交。</strong>由于用户 <code>user1</code> 推送了一个提交，所以用户 <code>user2</code> 的推送是非快进式的。</p>
+<p><strong><code>Git</code> 是如何判断此次推送是否快进式的呢？</strong></p>
+<p>判断方式类似以下操作：用 <code>git rev-list HEAD</code> 命令显示本地版本库的最新提交及其历史提交，然后用 <code>git ls-remote origin</code> 命令显示远程版本库的引用对应的哈希值，最后判断远程的哈希值是否本地版本库的祖先提交。</p>
+<p><img src="/2023/09/18/git/local_teamwork/local13.png" alt="local13.png"></p>
+<p>由图可知，<code>998627b</code> 并不是祖先提交，于是产生警告并终止了推送。</p>
+<p>解决这个问题的方案有多个，可以强制推送，但是用户 <code>user1</code> 的推送会被覆盖，这种方式会形成竞争而不是协作，是不合适的，就不介绍这种解决方式了。</p>
+<p>非快进式强制推送如果被滥用，就会成为项目的灾难，为了避免强制推送的问题，可以对版本库进行配置来禁止用户进行非快进式强制推送。将远程版本库的配置变量 <code>receive.denyNonFastForwards</code> 设置为 <code>true</code> 可以禁止任何用户进行非快进式推送操作：</p>
+<p><img src="/2023/09/18/git/local_teamwork/local18.png" alt="local18.png"></p>
+<p><strong>总结：合理的工作协同要避免非快进式推送，向服务器推送时发现错误，不应该使用更改历史的操作（变基、修补提交），而是采用不会改变历史提交的反转提交等操作。由于他人先推送了新的提交导致遇到非快进式推送警告时，应该先执行 <code>git pull</code> 获取服务器端最新的提交并和本地提交进行合并，合并成功后再向服务器进行提交推送。</strong></p>
+<ol start="4">
+<li>执行 <code>git pull</code> ，该命令会包含两个动作：获取远程版本库的提交(<code>git fetch</code>) ，以及将获取到的远程版本库提交与本地提交进行合并(<code>git merge</code>)。</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local14.png" alt="local14.png"></p>
+<ol start="5">
+<li>合并之后，看看版本库的提交关系图：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local15.png" alt="local15.png"></p>
+<p>远程服务器中的最新提交 <code>998627b</code> 成为了当前提交 <code>a943da7</code> 的父提交了，那么现在推送就是快进式的了，就不会有任何问题。</p>
+<ol start="6">
+<li>执行 <code>git push</code> 命令进行推送：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local16.png" alt="local16.png"></p>
+<ol start="7">
+<li>查看一下远程版本库的提交历史：</li>
+</ol>
+<p><img src="/2023/09/18/git/local_teamwork/local17.png" alt="local17.png"></p>
+<p>可以看到，增加了用户 <code>user2</code> 的提交并增加了一个合并的提交。</p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/09/18/git/local_teamwork/"
+      data-id="clmr5jrfn0002rgb9fobq02an"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  <a href="/2023/09/20/git/local_teamwork2/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      团队协作_冲突解决
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/09/12/git/git_clone/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 克隆</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
