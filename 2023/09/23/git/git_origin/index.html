@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="个人技术博客">
+  
+  <title>
+    Git 远程版本库 |
+    
+    fanda&#39;s blog
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="fanda's blog" type="application/atom+xml">
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article
+  id="post-git/git_origin"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  Git 远程版本库
+</h1>
+
+
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/09/23/git/git_origin/" class="article-date">
+  <time datetime="2023-09-23T08:08:58.000Z" itemprop="datePublished">2023-09-23</time>
+</a> 
+    </div>
+       
+
+    <div class="article-entry" itemprop="articleBody">
+         <p>Git 远程版本库</p>
+<span id="more"></span>
+
+<p><code>Git</code> 作为分布式版本控制系统，每个人都可以在本地的版本库中随意创建分支和标签。如果多人协作时，问题就出现了。</p>
+<p><strong>思考以下几个问题</strong></p>
+<ol>
+<li><p>如何避免因用户把所有的本地分支都推送到共享版本库，从而造成共享版本库分支的混乱？</p>
+</li>
+<li><p>如何避免不同用户针对不同特性开发创建了相同名字的分支而造成分支名称的冲突？</p>
+</li>
+<li><p>如何避免用户随意在共享版本库中创建标签而导致标签名称上的混乱和冲突？</p>
+</li>
+<li><p>有没有办法在执行 fetch 和 push 操作时，不用输入长长的版本 <code>URL</code> ?</p>
+</li>
+<li><p>如果不带任何其他参数执行 <code>git fetch</code> 、<code>git pull</code> 和 <code>git push</code> ，到底是和哪个远程版本库的哪个分支进行交互？</p>
+</li>
+</ol>
+<h3 id="一、-远程分支介绍"><a href="#一、-远程分支介绍" class="headerlink" title="一、 远程分支介绍"></a>一、 远程分支介绍</h3><p>之前介绍分支时，每个版本库只和一个远程共享版本库进行交互，实际上 <code>Git</code> 允许一个版本库和任意多的远程共享版本库进行交互。首先执行下面的命令，基于 <code>hello-world.git</code> 版本库再创建两个新的版本库。</p>
+<p><img src="/2023/09/23/git/git_origin/origin1.png" alt="origin1.png"></p>
+<p>现在共有三个共享版本库： <code>hello-world.git</code>、<code>hello-user3.git</code> 和 <code>hello-user4.git</code> ，先看看 <code>hello-world</code> 远程版本库中包含的分支有哪些：</p>
+<p><img src="/2023/09/23/git/git_origin/origin2.png" alt="origin2.png"></p>
+<p>共有三个分支，现在重新克隆一下该版本库到 <code>user5/workspace</code> 目录：</p>
+<p><img src="/2023/09/23/git/git_origin/origin3.png" alt="origin3.png"></p>
+<p>执行 <code>git branch</code> 命令查看一下本地分支：</p>
+<p><img src="/2023/09/23/git/git_origin/origin4.png" alt="origin4.png"></p>
+<p>发现只有一个 <code>master</code> 分支 ，远程版本库的其他分支在哪里呢？执行 <code>git show-ref</code> 命令可以看到全部的本地引用：</p>
+<p><img src="/2023/09/23/git/git_origin/origin5.png" alt="origin5.png"></p>
+<p>输出显示：有些引用以 <code>refs/remotes/origin</code> 为前缀，并且名称和远程版本库的分支名一一对应，这些引用实际上就是从远程版本库的分支复制过来的，称为远程分支。</p>
+<p>通过 <code>git branch</code>  加上 <code>-r</code> 参数，能够查看远程分支，如果是 <code>-a</code> 参数，则能够查看本地和远程所有分支：</p>
+<p><img src="/2023/09/23/git/git_origin/origin6.png" alt="origin6.png"></p>
+<p>实际上，在从远程版本库中执行获取操作时，不是把远程版本库的分支原封不动地复制到本地版本库的分支中，而是复制到另外的命名空间 <code>.git/refs/remotes/origin/</code> 下，这样从不同的远程版本库执行获取操作，因为命名空间的相互隔离，从而避免了分支在本地的相互覆盖。</p>
+<p>至于为什么远程分支都有一个名为 <code>origin/</code> 的前缀，原因就在于配置文件：</p>
+<p><img src="/2023/09/23/git/git_origin/origin7.png" alt="origin7.png"></p>
+<p>说明 ：</p>
+<ol>
+<li><p>第 1 行表示以 <code>origin</code> 为名注册了一个远程版本库。</p>
+</li>
+<li><p>第 2 行表示该远程版本库的地址。</p>
+</li>
+<li><p>第 3 行表示执行 <code>git fetch orgin</code> 操作时使用的默认引用表达式。该表达式以 <code>+</code> 号开头，含义是强制进行引用的替换，即使将进行的替换是非快进式的。引用表达式中使用了通配符，冒号左侧表示匹配通配符规则的所有远程版本库分支，右侧表示复制到本地的远程分支(<code>refs/remotes/origin/</code>)目录。</p>
+</li>
+<li><p>执行 <code>git fetch origin</code> 命令时，相当于执行了：<code>git fetch origin +refs/heads/*:refs/remotes/origin/*</code> ，将远程版本库所有的分支复制到本地的远程分支中。</p>
+</li>
+</ol>
+<p><strong>注意：远程分支不是真正意义上的分支，是类似于标签一样的引用。如果针对远程分支执行 <code>checkout</code> 命令，会看到大段的警告，告诉我们处于分离头状态。实际上，除了以 <code>refs/heads</code> 为前缀的引用之外，检出任何其他引用，都将使工作区处于分离头状态。如果要对远程分支进行修改，就需要创建新的本地分支。</strong></p>
+<h3 id="二、分支追踪"><a href="#二、分支追踪" class="headerlink" title="二、分支追踪"></a>二、分支追踪</h3><p>如果想在分支 <code>helper/v1.x</code> 上进行工作，那么需要基于该远程分支创建本地分支，远程分支可简写为： <code>origin/helper/v1.x</code> 。在 <code>Git</code> 较高版本（高于 1.6.6）时，可直接使用下面命令同时完成本地分支的创建和切换：<code>git checkout helper/v1.x</code> 。在低版本中或注册了多个远程版本库(可能存在多个同名的远程分支)，就不能使用上面简洁的分支创建和切换命令了，需要通过如下命令来创建：</p>
+<p><img src="/2023/09/23/git/git_origin/origin8.png" alt="origin8.png"></p>
+<p>输出显示，已经切换到对应分支了，并且本地分支和远程分支建立跟踪了。此时的本地分支有下列特征：</p>
+<ol>
+<li><p>检查工作区状态时，会显示本地分支和关联的远程分支提交之间的关系。</p>
+</li>
+<li><p>当执行 <code>git pull</code> 时，如果两者出现版本偏离的话，会和关联的远程分支进行合并（或者变基）。</p>
+</li>
+<li><p>当执行 <code>git push</code> 时，会推送到远程版本库的同名分支中。</p>
+</li>
+</ol>
+<p>下面进行操作演示：</p>
+<ol>
+<li>先将本地 <code>helper/v1.x</code> 分支回退两个提交版本，再查看一下状态：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin9.png" alt="origin9.png"></p>
+<p>输出显示：本地分支落后于远程分支 <code>origin/helper/v1.x</code> 两个提交，并提示可以通过 <code>git pull</code> 来更新到最新的提交状态。</p>
+<ol start="2">
+<li>执行 <code>git pull</code> 命令，会自动与关联的远程分支进行合并，相当于找回了最新的两个提交：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin10.png" alt="origin10.png"></p>
+<h3 id="三、基于本地分支创建另一个本地分支"><a href="#三、基于本地分支创建另一个本地分支" class="headerlink" title="三、基于本地分支创建另一个本地分支"></a>三、基于本地分支创建另一个本地分支</h3><p>基于本地分支创建另一个本地分支，是没有分支跟踪功能的，来演示一下：</p>
+<ol>
+<li>从本地分支 <code>helper/v1.x</code> 创建新的本地分支 <code>helper/v1.y</code> ：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin11.png" alt="origin11.png"></p>
+<p>只有一行输出，看不到分支间建立跟踪的提示。</p>
+<ol start="2">
+<li>将 <code>helper/v1.y</code> 分支回退两个版本，再查看一下状态：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin12.png" alt="origin12.png"></p>
+<ol start="3">
+<li>执行 <code>git pull</code> 命令，会报错：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin13.png" alt="origin13.png"></p>
+<p>输出表示：当前分支并没有跟踪信息，需要指定要和哪个分支进行合并操作。可通过 <code>git pull &#123;remote&#125; &#123;branch&#125;</code> 的方式指定拉取远程的指定分支，或者通过 <code>git branch --set-upstream-to=origin/&#123;branch&#125; helper/v1.y</code> 命令进行远程分支的跟踪，再进行拉取操作。</p>
+<ol start="4">
+<li>再查看一下配置文件：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin14.png" alt="origin14.png"></p>
+<p>会发现 <code>master</code> 和 <code>helper/v1.x</code> 都有配置信息，但是 <code>helper/v1.y</code> 并没有相关的配置。</p>
+<h3 id="四、基于本地分支创建另一个本地分支（具备跟踪）"><a href="#四、基于本地分支创建另一个本地分支（具备跟踪）" class="headerlink" title="四、基于本地分支创建另一个本地分支（具备跟踪）"></a>四、基于本地分支创建另一个本地分支（具备跟踪）</h3><p>如果希望在基于一个本地分支创建另一个本地分支时，建立分支间的跟踪功能，需要加上 <code>--track</code> 参数，具体演示一下：</p>
+<ol>
+<li>先检出 <code>helper/v1.x</code> ，再删除之前的 <code>helper/v1.y</code> 分支。</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin15.png" alt="origin15.png"></p>
+<ol start="2">
+<li>通过 <code>--track</code> 参数重新创建分支。</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin16.png" alt="origin16.png"></p>
+<ol start="3">
+<li>查看一下配置文件，因为这里跟踪的是本地分支，所以 <code>remote</code> 中的远程版本库的名字为一个点。</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin17.png" alt="origin17.png"></p>
+<h3 id="五、注册新的版本库"><a href="#五、注册新的版本库" class="headerlink" title="五、注册新的版本库"></a>五、注册新的版本库</h3><p>名为 <code>origin</code> 的远程版本库是在克隆时就已经自动注册了，下面再注册一个新的远程版本库：</p>
+<ol>
+<li><p>将 <code>e/git_study/repos/hello-user3.git</code> 以 <code>new-remote</code> 为名进行注册：<code>git remote add new-remote file:///e/git_study/repos/hello-user3.git</code></p>
+</li>
+<li><p>查看一下配置文件：</p>
+</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin18.png" alt="origin18.png"></p>
+<p>可以看到配置的分支信息 ， <code>remote</code> 默认都是 <code>origin</code> ，所以不加参数，直接运行 <code>git fetch</code> 命令，并不会从新注册的 <code>new-remote</code> 远程版本库中获取，需要指定远程版本库。</p>
+<ol start="3">
+<li>执行 <code>git remote -v</code> 命令，可以查看已经注册的远程版本库：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin19.png" alt="origin19.png"></p>
+<ol start="4">
+<li>从<code> new-remote</code> 远程版本库进行获取，并查看一下远程分支：</li>
+</ol>
+<p><img src="/2023/09/23/git/git_origin/origin20.png" alt="origin20.png"></p>
+<p>可以看到在 <code>new-remote</code> 目录下的三个远程分支。</p>
+<h3 id="六、更改远程版本库的地址"><a href="#六、更改远程版本库的地址" class="headerlink" title="六、更改远程版本库的地址"></a>六、更改远程版本库的地址</h3><p>如果远程版本库的地址改变了，怎么修改呢？第一种：直接打开 <code>.git/config</code> 文件修改。第二种：使用 <code>git config</code> 命令进行更改。第三种：用 <code>git remote</code> 命令：<code>git remote set-url new-remote file:///e/git_study/repos/hello-user4.git</code> 。</p>
+<p>再观察一下远程版本库信息：</p>
+<p><img src="/2023/09/23/git/git_origin/origin21.png" alt="origin21.png"></p>
+<p>输出显示：每个远程版本库都有两个 <code>URL</code> 地址，分别是执行 <code>git fetch</code> 和 <code>git push</code> 命令时用到的，这就意味着两个地址是可以不一样的，通过加上 <code>--push</code> 参数可以单独设置推送地址，如下图：</p>
+<p><img src="/2023/09/23/git/git_origin/origin22.png" alt="origin22.png"></p>
+<p>当单独为远程推送设置 <code>URL</code> 后，配置文件的 <code>remote</code> 节点也会增加一条名为 <code>pushurl</code> 的配置，如下：</p>
+<p><img src="/2023/09/23/git/git_origin/origin23.png" alt="origin23.png"></p>
+<h3 id="七、更改远程版本库的名称"><a href="#七、更改远程版本库的名称" class="headerlink" title="七、更改远程版本库的名称"></a>七、更改远程版本库的名称</h3><p>将远程 <code>new-remote</code> 的名称修改为 <code>user4</code> ：</p>
+<p><img src="/2023/09/23/git/git_origin/origin24.png" alt="origin24.png"></p>
+<p>重命名之后，相应的远程分支的名称也会自动更改。</p>
+<h3 id="八、远程版本库更新"><a href="#八、远程版本库更新" class="headerlink" title="八、远程版本库更新"></a>八、远程版本库更新</h3><p>当注册了多个远程版本库并希望所有远程版本库一起更新时，可通过如下命令：git remote update 。</p>
+<p>如果某个版本库不想通过 git remote update  自动更新，可以使用如下命令进行关闭：git config remote.user4.skipDefaultUpdate true</p>
+<h3 id="九、删除远程版本库"><a href="#九、删除远程版本库" class="headerlink" title="九、删除远程版本库"></a>九、删除远程版本库</h3><p>将 <code>user4</code> 远程版本库进行删除，命令为：<code>git remote rm user4</code> 。</p>
+<p><img src="/2023/09/23/git/git_origin/origin25.png" alt="origin25.png"></p>
+<h3 id="十、push-和-pull-操作远程版本库"><a href="#十、push-和-pull-操作远程版本库" class="headerlink" title="十、push 和 pull 操作远程版本库"></a>十、push 和 pull 操作远程版本库</h3><p><code>push</code> 和 <code>pull</code> 操作的重点在于配置文件，配置文件指定了合并的远程版本库名称、远程推送和获取的地址、引用表达式、远程分支信息等等，根据如下的配置图，我们来分析一下执行过程：</p>
+<p><img src="/2023/09/23/git/git_origin/origin23.png" alt="origin23.png"></p>
+<p><strong>不带参数执行 git push 命令的执行过程：</strong></p>
+<ol>
+<li><p>如果为当前分支设置了 <code>&#123;remote&#125;</code> ，则不带参数执行 <code>git push</code> 相当于执行了 <code>git push &#123;remote&#125;</code> 。如果没有为当前分支设置 <code>&#123;remote&#125;</code> ，则相当于执行了 <code>git push origin</code> 。</p>
+</li>
+<li><p>要推送的远程版本库的 <code>URL</code> 由 <code>&#123;remote&#125;.pushurl</code> 指定，如果没有配置，则使用 <code>&#123;remote&#125;.url</code> 配置的 <code>URL</code> 地址。</p>
+</li>
+<li><p>如果为注册的远程版本库设置了 <code>push</code> 参数，即通过 <code>&#123;remote&#125;.push</code> 配置了一个引用表达式，则使用该引用表达式执行推送。否则，使用 “:” 作为引用表达式。该表达式的含义是同名分支推送，即对所有在远程版本库中有同名分支的本地分支执行推送。</p>
+</li>
+</ol>
+<p><strong>总结：在一个本地新建分支中执行 <code>git push</code> 推送操作，是不会推送也不会报错的，因为远程分支不存在同名分支，所以根本就没有对该分支执行推送。如果需要在远程版本库中创建分支，可以执行 <code>git push &#123;remote&#125; &#123;new_branch&#125;</code> 。通过将本地分支推送到远程版本库的方式在远程版本库中创建分支。但是，不能通过 <code>git pull</code>（不带参数）将远程版本库中其他人推送的提交获取到本地，因为没有建立本地分支和远程分支的追踪。</strong></p>
+<p><strong>不带参数执行 <code>git pull</code> 命令的执行过程：</strong></p>
+<ol>
+<li><p>跟 <code>git push</code> 一样，如果配置了 <code>&#123;remote&#125;</code> ，则使用配置的 <code>&#123;remote&#125;</code> 名称，否则使用 <code>origin</code> ，即不带参数的 <code>git pull</code> 相当于执行了 <code>git pull origin</code> 。</p>
+</li>
+<li><p>要获取的远程版本库的 <code>URL</code> 由地址 <code>&#123;remote&#125;.url</code> 指定。</p>
+</li>
+<li><p>如果为注册的远程版本库设置了 <code>fetch</code> 参数，即通过 <code>&#123;remote&#125;.fetch</code> 配置了一个引用表达式，则使用该引用表达式执行获取操作。</p>
+</li>
+<li><p>如果配置了 <code>branch.merge</code> ，则对其设定的分支执行合并操作，否则报错。</p>
+</li>
+</ol>
+<p><strong>总结：在执行 <code>git pull</code> 操作时，可以通过使用参数 <code>--rebase</code> 设置使用变基而非合并操作。可通过使用： <code>git config branch.&#123;branchname&#125;.rebase true</code> 命令设置使用变基操作，而不是默认的合并操作。</strong></p>
+<h3 id="十一、标签和远程版本库"><a href="#十一、标签和远程版本库" class="headerlink" title="十一、标签和远程版本库"></a>十一、标签和远程版本库</h3><p>远程版本库中的 <code>tag</code> 同步到本地版本库时，会使用相同的名称，不会像分支那样复制到另外的命令空间（远程分支）中，这可能会给本地版本库的标签带来混乱，特别是和多个远程版本库交互时。</p>
+<p>之前讲过，<code>执行 git fetch</code> 命令时，如果有新建的 <code>tag</code> ，这些 <code>tag</code> 会被获取到本地版本库中。当删除远程版本库时，远程分支会被删除，但是已经引入到本地的 <code>tag</code> 并不会被删除（删除远程不影响本地），这也使本地版本库中的 <code>tag</code> 变得混乱。如果不想管理 <code>tag</code> ，可以进行如下操作：</p>
+<ol>
+<li><p>在执行 <code>git fetch</code> 命令时，可以加上 <code>-n</code> 或 <code>--no-tags</code> 参数不获取 <code>tag</code> 而只获取分支和提交。</p>
+</li>
+<li><p>在注册远程版本库的时候，也可以使用 <code>--no-tags</code> 参数，避免将远程版本库的 <code>tag</code> 引入到本地版本库。</p>
+</li>
+</ol>
+<p>实际上 <code>Git</code> 版本库本身也提供了一些安全机制避免对版本库的破坏：</p>
+<ol>
+<li>用 <code>reflog</code> 对分支的操作历史进行记录。</li>
+</ol>
+<p>默认创建的带工作区的版本库都会包含 <code>corelogallrefupdates</code> 为 <code>true</code> 的配置，这样在版本库中建立的每个分支都会创建对应的 <code>reflog</code> 。但是创建的裸版本库默认不包含这个设置，也就不会为每个分支设置 <code>reflog</code> 。如果团队的规模较小，可能因为分支误操作导致数据丢失，可以考虑为裸版本库添加<code>corelogallrefupdates</code> 的相关配置。</p>
+<ol start="2">
+<li>关闭非快进式推送。</li>
+</ol>
+<p>如果将配置 <code>receivedenyNonFastForwards</code> 设置为 <code>true</code> ，则禁止一切非快进式推送。但这个配置有些矫枉过正，更好的方法是搭建基于 <code>SSH</code> 协议的 <code>Git</code> 服务器，通过钩子脚本更灵活地进行配置。允许来自某些用户的强制提交，而其他用户不能执行非快进式推送。</p>
+<ol start="3">
+<li>关闭分支删除功能。</li>
+</ol>
+<p>如果将配置 <code>receivedenyDeletes</code> 设置为 <code>true</code> ，则禁止删除分支。同样更好的方法是通过架设基于 <code>SSH</code> 协议的 <code>Git</code> 服务器，配置分支删除的用户权限。</p>
+ 
+    </div>
+    <footer class="article-footer">
+      <!-- data-url="https://liuhangya.github.io/2023/09/23/git/git_origin/"
+      data-id="cln1cyg270001ogb96szae9pt"
+      class="article-share-link" -->
+      <!-- <a class="article-share-link">
+        分享
+      </a> -->
+      
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+<nav class="article-nav">
+  
+  
+  <a href="/2023/09/22/git/git_branch/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">Git 分支</div>
+  </a>
+  
+</nav>
+  
+  
+<div class="vcomments" id="vcomments"></div>
+
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  new Valine({
+    el: '#vcomments',
+    appId: 'mXq6Jmscj2XizYUdnKDqcjvO-gzGzoHsz',
+    appKey: 'YY1txddK6dY4r0OHRNfbbpYN',
+    notify: 'false',
+    verify: 'true',
+    avatar: 'mp',
+    pageSize: '10',
+    placeholder: '请输入...'
+  })
+</script>
+  
+</article>
+
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>fanda&#39;s blog &copy; 2023</li>
+      
+        <li></li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="fanda&#39;s blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">相册</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/favorites">收藏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
